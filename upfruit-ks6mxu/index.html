@@ -1,0 +1,956 @@
+<!DOCTYPE html>
+<html lang="es" data-lang="es"><head>
+<meta name="robots" content="noindex, nofollow"><meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Propuesta ARGO — UPFRUIT</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,500;1,8..60,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#FAF7F0; --bg-soft:#F2EDE2; --line:#E4DCC9;
+    --gold-deep:#A9852D; --gold:#C9A843; --gold-soft:rgba(201,168,67,.08);
+    --ink:#1C1710; --muted:#6B6353;
+    --serif:'Source Serif 4', Georgia, serif;
+    --display:'Cormorant Garamond', Georgia, serif;
+    --sans:'DM Sans', -apple-system, Helvetica, sans-serif;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--ink);font-family:var(--serif);font-weight:300;font-size:17px;line-height:1.75}
+
+  /* ---- Idioma: el toggle solo cambia visibilidad, scroll y acordeones se conservan ---- */
+  [data-lang="es"] .en{display:none!important}
+  [data-lang="en"] .es{display:none!important}
+
+  /* ---- Barra de progreso de lectura ---- */
+  #progress{position:fixed;top:0;left:0;height:3px;width:0;background:var(--gold);z-index:60;transition:width .1s linear}
+
+  /* ---- Toggle idioma ---- */
+  .lang-toggle{display:flex;border:1px solid var(--line);border-radius:20px;overflow:hidden}
+  .lang-toggle button{font-family:var(--sans);font-size:10px;letter-spacing:.18em;padding:5px 13px;border:none;
+    background:transparent;color:var(--muted);cursor:pointer;transition:all .2s ease}
+  .lang-toggle button:hover{color:var(--gold-deep)}
+  .lang-toggle button.active{background:var(--gold-soft);color:var(--gold-deep);font-weight:500}
+
+  /* ---- Cabecera fija ---- */
+  header.brand{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 28px;background:rgba(250,247,240,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line);
+    font-family:var(--sans);font-size:11px;letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+  header.brand .logo{color:var(--ink);font-weight:500}
+  header.brand .right{display:flex;align-items:center;gap:18px}
+  header.brand .mid{white-space:nowrap}
+
+  /* ---- Layout: nav lateral + contenido ---- */
+  .layout{display:flex;max-width:1280px;margin:0 auto;padding-top:56px}
+  nav#toc{position:sticky;top:88px;align-self:flex-start;width:250px;flex-shrink:0;padding:32px 0 32px 28px;
+    font-family:var(--sans);font-size:11px;letter-spacing:.14em;text-transform:uppercase}
+  nav#toc a{display:block;padding:9px 0 9px 14px;color:var(--muted);text-decoration:none;border-left:1px solid var(--line);
+    transition:color .2s ease,border-color .2s ease}
+  nav#toc a:hover{color:var(--gold-deep)}
+  nav#toc a.active{color:var(--gold-deep);border-left:2px solid var(--gold);padding-left:13px;font-weight:500}
+  #tocBtn{display:none}
+  main{flex:1;min-width:0;padding:0 28px 140px}
+
+  /* ---- Secciones ---- */
+  section.block{padding:72px 0;border-bottom:1px solid var(--line);max-width:760px;margin:0 auto}
+  .eyebrow{display:inline-block;font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.22em;
+    text-transform:uppercase;color:var(--gold-deep);border:1px solid rgba(201,168,67,.6);border-radius:20px;
+    padding:4px 12px;background:var(--gold-soft);margin-bottom:22px}
+  h1{font-family:var(--display);font-weight:500;font-size:76px;line-height:1.05;color:var(--gold-deep)}
+  h1 em{font-style:italic}
+  h2{font-family:var(--display);font-weight:500;font-size:40px;line-height:1.15;color:var(--gold-deep);margin-bottom:24px}
+  h3{font-family:var(--display);font-weight:600;font-size:25px;margin:44px 0 12px;line-height:1.25}
+  h3:first-of-type{margin-top:28px}
+  h4{font-family:var(--display);font-weight:600;font-size:19px;margin:26px 0 8px;line-height:1.3}
+  p{margin-bottom:16px}
+  .muted{color:var(--muted)}
+  .lead{font-family:var(--display);font-size:26px;line-height:1.45;color:var(--ink);font-weight:400;margin-bottom:28px}
+  .lead em{font-style:italic;color:var(--gold-deep)}
+  .sub{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold-deep);margin:28px 0 8px}
+  ul.clean{list-style:none;margin:14px 0}
+  ul.clean li{padding:10px 0 10px 22px;border-bottom:1px solid var(--line);position:relative;font-size:15px;line-height:1.6}
+  ul.clean li::before{content:"";position:absolute;left:0;top:19px;width:8px;height:1px;background:var(--gold)}
+  ul.clean li strong{font-weight:500}
+  ol.steps{list-style:none;counter-reset:s;margin:20px 0}
+  ol.steps li{counter-increment:s;position:relative;padding:14px 0 14px 46px;border-bottom:1px solid var(--line);
+    font-size:15px;line-height:1.65}
+  ol.steps li::before{content:counter(s);position:absolute;left:2px;top:15px;font-family:var(--display);font-size:24px;
+    font-weight:500;color:var(--gold-deep);line-height:1}
+  ol.steps li strong{font-weight:500}
+  .note{background:var(--bg-soft);border-left:2px solid var(--gold);padding:18px 22px;margin:24px 0;font-size:15px;
+    line-height:1.65;color:var(--muted)}
+  .note strong{color:var(--ink);font-weight:500}
+  .note p:last-child{margin-bottom:0}
+  .note .eyebrow{margin-bottom:12px}
+
+  /* ---- Animación de aparición al hacer scroll ---- */
+  .reveal{opacity:0;transform:translateY(16px);transition:opacity .6s ease,transform .6s ease}
+  .reveal.visible{opacity:1;transform:none}
+
+  /* ---- Acordeones ---- */
+  .acc{border:1px solid var(--line);border-radius:6px;background:rgba(255,255,255,.4);margin-bottom:18px;overflow:hidden;
+    transition:border-color .25s ease}
+  .acc:hover{border-color:var(--gold)}
+  .acc-head{width:100%;display:flex;align-items:flex-start;justify-content:space-between;gap:16px;padding:22px 26px;
+    background:none;border:none;cursor:pointer;text-align:left;font-family:var(--display);font-size:24px;font-weight:600;
+    color:var(--ink);transition:color .2s ease}
+  .acc-head:hover{color:var(--gold-deep)}
+  .acc-head .ttl{display:block}
+  .acc-head .tag{display:block;font-family:var(--sans);font-size:9px;font-weight:400;letter-spacing:.2em;
+    text-transform:uppercase;color:var(--muted);margin-top:7px}
+  .acc-head .chev{flex-shrink:0;width:12px;height:12px;border-right:1.5px solid var(--gold-deep);
+    border-bottom:1.5px solid var(--gold-deep);transform:rotate(45deg);transition:transform .3s ease;margin-top:6px}
+  .acc.open .acc-head .chev{transform:rotate(-135deg);margin-top:14px}
+  .acc-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .45s ease}
+  .acc.open .acc-body{grid-template-rows:1fr}
+  .acc-inner{overflow:hidden;padding:0 26px}
+  .acc.open .acc-inner{padding-bottom:26px}
+  .acc-inner .sub:first-child{margin-top:4px}
+  .acc-inner h4:first-child{margin-top:4px}
+  .acc-tools{display:flex;gap:10px;margin:0 0 20px}
+  .acc-tools button{font-family:var(--sans);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+    border:1px solid var(--line);border-radius:20px;padding:5px 13px;background:transparent;color:var(--muted);
+    cursor:pointer;transition:all .2s ease}
+  .acc-tools button:hover{color:var(--gold-deep);border-color:var(--gold)}
+
+  /* ---- Precios ---- */
+  table.price{width:100%;border-collapse:collapse;margin:22px 0 26px;font-size:15px}
+  table.price th{font-family:var(--sans);font-size:10px;font-weight:500;letter-spacing:.2em;text-transform:uppercase;
+    color:var(--gold-deep);text-align:left;padding:0 0 12px;border-bottom:1px solid var(--gold)}
+  table.price th.r{text-align:right}
+  table.price td{padding:18px 0;border-bottom:1px solid var(--line);vertical-align:top;line-height:1.6}
+  table.price td.name{font-weight:500;width:30%;padding-right:24px}
+  table.price td.desc{color:var(--muted);font-size:14px}
+  table.price td.amt{text-align:right;white-space:nowrap;width:18%;font-family:var(--display);font-size:29px;
+    font-weight:500;color:var(--gold-deep);line-height:1.2}
+  .fee{display:flex;justify-content:space-between;align-items:center;gap:36px;flex-wrap:wrap;
+    background:var(--bg-soft);border-left:2px solid var(--gold);padding:30px 32px;margin:26px 0;border-radius:4px}
+  .fee .t{font-family:var(--sans);font-size:11px;font-weight:500;letter-spacing:.22em;text-transform:uppercase;
+    color:var(--gold-deep)}
+  .fee .d{font-size:14px;color:var(--muted);margin-top:10px;max-width:480px;line-height:1.6}
+  .fee .a{font-family:var(--display);font-size:54px;font-weight:500;line-height:1;color:var(--gold-deep);white-space:nowrap}
+  .fee .a.tbd{font-size:30px;font-style:italic;white-space:normal;max-width:240px;text-align:right}
+  .note.fee-note{border-left-width:3px;margin-top:0}
+  .note.fee-note p:first-of-type strong{color:var(--gold-deep)}
+
+  footer{max-width:760px;margin:0 auto;padding:48px 28px;text-align:center;font-family:var(--sans);font-size:10px;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--muted)}
+
+  /* ---- Móvil: el índice pasa a menú desplegable ---- */
+  @media (max-width:900px){
+    body{font-size:16px}
+    .layout{flex-direction:column;padding-top:52px}
+    h1{font-size:44px} h2{font-size:31px} .lead{font-size:21px}
+    header.brand .mid{display:none}
+    nav#toc{position:fixed;top:52px;left:0;right:0;width:auto;padding:0;background:rgba(250,247,240,.97);
+      backdrop-filter:blur(8px);border-bottom:1px solid var(--line);z-index:48;
+      max-height:0;overflow:hidden;transition:max-height .35s ease}
+    nav#toc.open{max-height:70vh;overflow-y:auto;padding:10px 0}
+    nav#toc a{padding:12px 28px;border-left:none}
+    nav#toc a.active{border-left:none;background:var(--gold-soft)}
+    #tocBtn{display:block;font-family:var(--sans);font-size:10px;letter-spacing:.18em;text-transform:uppercase;
+      border:1px solid var(--line);border-radius:20px;padding:5px 13px;background:transparent;color:var(--muted);cursor:pointer}
+    main{padding:0 20px 120px}
+    section.block{padding:52px 0}
+    .acc-head{font-size:20px;padding:18px 20px}
+    .acc-inner{padding:0 20px}
+    .acc.open .acc-inner{padding-bottom:20px}
+    table.price td{display:block;width:auto;padding:4px 0}
+    table.price tr{display:block;border-bottom:1px solid var(--line);padding:14px 0}
+    table.price td{border-bottom:none}
+    table.price td.amt{text-align:left;font-size:26px}
+    table.price thead{display:none}
+    .fee .a{font-size:40px}
+    .fee .a.tbd{font-size:26px;text-align:left}
+  }
+  @media (prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto}
+    *,.reveal{transition:none!important}
+    .reveal{opacity:1;transform:none}
+  }
+
+  /* ---- Impresión / PDF ---- */
+  @media print{
+    *{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    #progress,header.brand,nav#toc,.acc-tools,.acc-head .chev,.lang-toggle{display:none!important}
+    .layout{padding-top:0;display:block}
+    main{padding:0}
+    .reveal{opacity:1!important;transform:none!important}
+    .acc-body{display:block!important}
+    .acc-inner{overflow:visible;padding-bottom:20px}
+    .acc{break-inside:avoid;page-break-inside:avoid}
+    section.block{page-break-before:always;padding:30px 0;border-bottom:none}
+    section#portada{page-break-before:auto}
+    .note,.fee,table.price tr{page-break-inside:avoid}
+    h2,h3,.acc-head{page-break-after:avoid}
+  }
+</style></head><body>
+<div id="progress"></div>
+<header class="brand">
+  <span class="logo">ARGO GROUP</span>
+  <span class="mid es">PROPUESTA</span><span class="mid en">PROPOSAL</span>
+  <div class="right">
+    <span class="mid">BARCELONA · MIAMI</span>
+    <div class="lang-toggle" role="group" aria-label="Idioma">
+      <button id="btnEs" class="active" onclick="setLang('es')">ES</button>
+      <button id="btnEn" onclick="setLang('en')">EN</button>
+    </div>
+    <button id="tocBtn" onclick="document.getElementById('toc').classList.toggle('open')"><span class="es">Índice</span><span class="en">Index</span></button>
+  </div>
+</header>
+<div class="layout">
+  <nav id="toc" aria-label="Índice">
+    <a href="#portada"><span class="es">Portada</span><span class="en">Cover</span></a>
+    <a href="#diagnostico"><span class="es">Diagnóstico</span><span class="en">Diagnosis</span></a>
+    <a href="#mapa-de-marcas"><span class="es">Mapa de marcas</span><span class="en">Brand map</span></a>
+    <a href="#como-trabajamos"><span class="es">Cómo trabajamos</span><span class="en">How we work</span></a>
+    <a href="#inversion-y-modelo-de-cobro"><span class="es">Inversión y modelo de cobro</span><span class="en">Investment and fee model</span></a>
+    <a href="#tiempos"><span class="es">Tiempos</span><span class="en">Timelines</span></a>
+  </nav>
+  <main>
+<section class="block reveal" id="portada">
+  <span class="eyebrow"><span class="es">Propuesta de trabajo</span><span class="en">Commercial proposal</span></span>
+  <h1><em>UPFRUIT</em></h1>
+  <p class="lead" style="margin-top:26px"><span class="es">Propuesta de trabajo · Marca y marketing digital</span><span class="en">Proposal of work · Brand and digital marketing</span></p>
+  <p><span class="es">Este documento recoge el diagnóstico de la situación actual, el mapa de marcas que proponemos construir, el proceso de trabajo fase por fase y el modelo de inversión. Su objetivo es que quede claro qué vamos a hacer, en qué orden y qué incluye exactamente cada fase por parte de ARGO.</span><span class="en">This document sets out the diagnosis of the current situation, the brand map we propose to build, the phase-by-phase process of work and the investment model. Its purpose is to make clear what we are going to do, in what order and what exactly each phase includes on ARGO&#x27;s part.</span></p>
+  <p class="muted">Barcelona · Miami</p>
+</section>
+<section class="block reveal" id="diagnostico">
+  <span class="eyebrow"><span class="es">Sección 01</span><span class="en">Section 01</span></span>
+  <h2><span class="es">Diagnóstico</span><span class="en">Diagnosis</span></h2>
+<h3><span class="es">Lectura general</span><span class="en">The general reading</span></h3>
+<p><span class="es">El negocio funciona: hay clientes fieles, producto bueno, precio competitivo y una distribuidora que opera y crece. Lo que no existe es la capa que convierte todo eso en algo reconocible, defendible y escalable. No hay marca, no hay presencia digital, no hay materiales, no hay relato, no hay marketing digital. Se vende bien a pesar de no comunicar nada.</span><span class="en">The business works: there are loyal customers, good product, a competitive price and a wholesale arm that operates and grows. What does not exist is the layer that turns all of that into something recognisable, defensible and scalable. There is no brand, no digital presence, no materials, no story, no digital marketing. You are selling well despite communicating nothing.</span></p>
+<p><span class="es">Es una posición de partida cómoda y a la vez engañosa. Cómoda porque no hay que arreglar nada roto: se construye sobre algo que ya funciona, y eso reduce muchísimo el riesgo del proyecto. Engañosa porque el crecimiento obtenido hasta ahora (boca a boca, relación personal, comercial a pie de calle) tiene techo, y ese techo llega justo cuando se quiere expandir.</span><span class="en">It is a comfortable starting position and a deceptive one at the same time. Comfortable because there is nothing broken to fix: you build on something that already works, and that hugely reduces the risk of the project. Deceptive because the growth achieved so far (word of mouth, personal relationships, a sales rep out on the street) has a ceiling, and that ceiling arrives precisely when you want to expand.</span></p>
+<div class="acc-tools"><button type="button" onclick="accAll(this,true)"><span class="es">Abrir todo</span><span class="en">Expand all</span></button><button type="button" onclick="accAll(this,false)"><span class="es">Cerrar todo</span><span class="en">Collapse all</span></button></div>
+<div class="acc open">
+  <button class="acc-head" aria-expanded="true">
+    <span><span class="ttl"><span class="es">Rama 1 · Distribución HORECA</span><span class="en">Branch 1 · HORECA wholesale</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p class="sub"><span class="es">Dónde está</span><span class="en">Where it stands</span></p>
+<p><span class="es">Es el núcleo del negocio y la prioridad declarada. Reparte a hoteles, restaurantes y bares en Barcelona y Cataluña, con voluntad de expandirse. Capta a través de comerciales y relación personal. A nivel de marketing se parte de cero: sin web, sin ficha de Google, con redes abiertas pero inactivas, sin packaging, sin identidad visual y sin materiales comerciales.</span><span class="en">This is the core of the business and the stated priority. It delivers to hotels, restaurants and bars in Barcelona and Catalonia, with the intention of expanding. Customers are acquired through sales reps and personal relationships. In marketing terms you are starting from zero: no website, no Google listing, social accounts open but inactive, no packaging, no visual identity and no sales materials.</span></p>
+<p class="sub"><span class="es">Cuál es el problema real</span><span class="en">What the real problem is</span></p>
+<p><span class="es">No es que no se capten clientes: se captan. El problema es que el comercial trabaja sin respaldo. En HORECA, un jefe de compras o un chef que valora cambiar de proveedor busca a la empresa antes de decidir, y hoy no encuentra nada. La ausencia de presencia digital no hace perder clientes de forma visible: hace perder credibilidad de forma invisible.</span><span class="en">It is not that customers are not being acquired: they are. The problem is that the sales rep works without any backing. In HORECA, a head of purchasing or a chef weighing up a change of supplier looks the company up before deciding, and today they find nothing. The absence of a digital presence does not lose you customers visibly: it loses you credibility invisibly.</span></p>
+<p class="sub"><span class="es">Qué hay que entender aquí</span><span class="en">What has to be understood here</span></p>
+<p><span class="es">En este canal el marketing no capta, habilita. No llegan pedidos de restaurantes por una campaña como llegan en un ecommerce. Lo que hace el marketing es abrir puertas, acortar el camino del comercial y resolver objeciones antes de que se formulen. Si esta expectativa no queda clara desde el principio, cualquier resultado se medirá con la vara equivocada.</span><span class="en">In this channel marketing does not acquire, it enables. Orders from restaurants do not come in off the back of a campaign the way they do in an ecommerce. What marketing does is open doors, shorten the sales rep&#x27;s path and resolve objections before they are voiced. If that expectation is not clear from the outset, any result will be measured against the wrong yardstick.</span></p>
+<p class="sub"><span class="es">Lo que falta, por orden de urgencia</span><span class="en">What is missing, in order of urgency</span></p>
+<ul class="clean">
+<li><span class="es">Identidad de marca.</span><span class="en">Brand identity.</span></li>
+<li><span class="es">Web que aguante el escrutinio de un profesional.</span><span class="en">A website that stands up to a professional&#x27;s scrutiny.</span></li>
+<li><span class="es">Ficha de Google Business.</span><span class="en">Google Business listing.</span></li>
+<li><span class="es">Catálogo o dossier comercial, lo que más agradecerá el equipo comercial y lo más rápido de rentabilizar.</span><span class="en">A catalogue or sales dossier, the thing the sales team will be most grateful for and the quickest to pay for itself.</span></li>
+<li><span class="es"><strong>Diseño del etiquetado de las cajas:</strong> el soporte de marca más desaprovechado, ya que cada caja entra a diario en la cocina de un cliente y hoy no comunica nada.</span><span class="en"><strong>Label design for the boxes:</strong> the most wasted brand asset there is, given that every box goes into a customer&#x27;s kitchen daily and today says nothing.</span></li>
+</ul>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Rama 2 · Tienda física</span><span class="en">Branch 2 · Physical shop</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p class="sub"><span class="es">Dónde está</span><span class="en">Where it stands</span></p>
+<p><span class="es">Funciona bien y está orientada a consumidor final, no a HORECA. Clientela fiel, recurrencia alta, todo construido orgánicamente por boca a boca. Y, como en la distribución, sin ninguna presencia digital ni marca.</span><span class="en">It works well and is aimed at the end consumer, not at HORECA. Loyal clientele, high repeat rate, all built organically by word of mouth. And, as with the wholesale arm, with no digital presence and no brand at all.</span></p>
+<p class="sub"><span class="es">El matiz importante</span><span class="en">The important nuance</span></p>
+<p><span class="es">Que funcione bien no significa que esté optimizada: significa que no duele. Es el punto donde ya existe demanda validada, sin ninguna infraestructura que la amplifique. El coste de oportunidad es alto aunque no se perciba como problema.</span><span class="en">That it works well does not mean it is optimised: it means it does not hurt. This is the point where validated demand already exists, with no infrastructure to amplify it. The opportunity cost is high even if it is not perceived as a problem.</span></p>
+<p class="sub"><span class="es">Su valor real dentro del proyecto</span><span class="en">Its real value within the project</span></p>
+<p><span class="es">No es facturar más en el mostrador. Es que la tienda funciona como escaparate físico de la marca: es la prueba tangible del estándar de calidad, es material para contenido y es un argumento comercial ante un chef. Por eso conviene no aparcarla, aunque no sea la prioridad: es el mejor apoyo que tiene la rama que sí lo es.</span><span class="en">It is not about billing more over the counter. It is that the shop works as the brand&#x27;s physical shop window: it is the tangible proof of the quality standard, it is material for content and it is a sales argument in front of a chef. That is why it is worth not parking it, even if it is not the priority: it is the best support the branch that is the priority has.</span></p>
+<p class="sub"><span class="es">El ángulo de posicionamiento</span><span class="en">The positioning angle</span></p>
+<p><span class="es">Sois distribuidores que abastecen a restaurantes y vendéis ese mismo género al público. Ninguna frutería de barrio puede reclamar eso. Es diferencial, es creíble y es verdad.</span><span class="en">You are wholesalers who supply restaurants and you sell that same produce to the public. No neighbourhood greengrocer can claim that. It is differentiating, it is credible and it is true.</span></p>
+<p><span class="es">Un ejemplo para que se entienda mejor: Ametller Origen sirve como referencia de lo que consigue una marca, vender la misma fruta con más margen porque vende una idea, pero no como modelo a copiar: su relato se apoya en finca propia, y aquí hay que construir uno propio.</span><span class="en">An example to make it clearer: Ametller Origen serves as a reference for what a brand achieves, selling the same fruit at a higher margin because it sells an idea, but not as a model to copy: their story leans on owning their own farm, and here you have to build one of your own.</span></p>
+<p class="sub"><span class="es">Sobre lo que se planteó en la reunión</span><span class="en">On what was raised in the meeting</span></p>
+<p><span class="es">El pedido con recogida en tienda tiene sentido y es barato de validar por WhatsApp. Una app propia queda descartada por relación coste-beneficio. Y abrir más tiendas es la conclusión correcta, pero como consecuencia: primero se demuestra que la marca aumenta ticket y frecuencia en una, y esa marca es justamente lo que hace que la segunda no empiece de cero.</span><span class="en">Ordering with collection in shop makes sense and is cheap to validate over WhatsApp. An app of your own is ruled out on cost-benefit grounds. And opening more shops is the right conclusion, but as a consequence: first you prove that the brand increases basket size and frequency in one, and that brand is precisely what stops the second one starting from zero.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Rama 3 · Obrador y marcas de producto</span><span class="en">Branch 3 · Production kitchen and product brands</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p class="sub"><span class="es">Dónde está</span><span class="en">Where it stands</span></p>
+<p><span class="es">Es la parte menos definida. Dos marcas, una oriental y una mediterránea, ambas con vocación de venta nacional, y ya se apunta al modelo endosado («oriental by [marca madre]»), que es la dirección correcta.</span><span class="en">This is the least defined part. Two brands, one oriental and one Mediterranean, both intended for national sale, and the endorsed model is already being pointed to («oriental by [parent brand]»), which is the right direction.</span></p>
+<p class="sub"><span class="es">El problema de calendario</span><span class="en">The calendar problem</span></p>
+<p><span class="es">Un endoso solo aporta valor si la marca madre significa algo. Hoy el nombre no le dice nada a un consumidor de supermercado, así que ese respaldo sería decorativo. Esto no invalida la decisión, la ordena: primero marca madre con contenido real, después las marcas se cuelgan de ella.</span><span class="en">An endorsement only adds value if the parent brand means something. Today the name says nothing to a supermarket shopper, so that backing would be decorative. This does not invalidate the decision, it orders it: first a parent brand with real content, then the brands hang off it.</span></p>
+<p class="sub"><span class="es">Lo que sigue en el aire</span><span class="en">What is still up in the air</span></p>
+<p><span class="es">Cómo se piensa vender a nivel nacional (a retail, directo al consumidor o vía restauración), que es la pregunta que cambia el proyecto entero y aún no está respondida. Y el estado real de producto, packaging y trámites sanitarios. Sin eso no se puede dimensionar.</span><span class="en">How you intend to sell nationally (to retail, direct to consumer or via foodservice), which is the question that changes the entire project and has not yet been answered. And the real state of product, packaging and health and safety paperwork. Without that it cannot be sized.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Rama 4 · Existencias y operaciones</span><span class="en">Branch 4 · Stock and operations</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p class="sub"><span class="es">Dónde está</span><span class="en">Where it stands</span></p>
+<p><span class="es">No hay control claro del stock: no se sabe con exactitud qué hay, cómo se mueve ni qué queda. Se reconoce como un problema serio y no hay definido qué sistema adoptar.</span><span class="en">There is no clear control of stock: it is not known exactly what there is, how it moves or what is left. It is acknowledged as a serious problem and no decision has been made on which system to adopt.</span></p>
+<p class="sub"><span class="es">Por qué es más grave de lo que parece</span><span class="en">Why it is more serious than it looks</span></p>
+<p><span class="es">En producto fresco esto es dinero perdido a diario por dos vías: merma de producto que caduca sin venderse, y roturas de stock que dejan mal ante un restaurante, que es exactamente lo que hace perder una cuenta. Es el problema con impacto económico más directo de todos los detectados.</span><span class="en">In fresh produce this is money lost daily on two fronts: wastage of product that expires without being sold, and stock-outs that leave you looking bad in front of a restaurant, which is exactly what loses an account. It is the problem with the most direct financial impact of all those detected.</span></p>
+<p class="sub"><span class="es">La cautela que hay que tener</span><span class="en">The caution to be taken</span></p>
+<p><span class="es">Esto no es marketing, es operaciones y ERP. Y es muy probable que el sistema actual de Arga Digital ya disponga de un módulo de stock que no se use o se use a medias, algo habitual en este tipo de ERP sectoriales. Montar una solución paralela sin confirmarlo sería un error caro. Lo primero es confirmar el estado real de la situación y plantear soluciones a posteriori.</span><span class="en">This is not marketing, it is operations and ERP. And it is very likely that Arga Digital&#x27;s current system already has a stock module that is not used or only half used, which is common in this kind of sector-specific ERP. Building a parallel solution without confirming that would be an expensive mistake. The first thing is to confirm the real state of the situation and put forward solutions afterwards.</span></p>
+<p class="sub"><span class="es">Cómo debe tratarse</span><span class="en">How it should be handled</span></p>
+<p><span class="es">Como diagnóstico separado, con su propio alcance y su propia cifra. Lo que no puede ocurrir es que quede como un compromiso difuso dentro del trabajo de marketing.</span><span class="en">As a separate diagnosis, with its own scope and its own figure. What cannot happen is that it is left as a vague commitment inside the marketing work.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Rama 5 · Sistema de pedidos con IA</span><span class="en">Branch 5 · AI-based ordering system</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Es un trabajo que se planteará más adelante, en una fase posterior del proyecto.</span><span class="en">This is a piece of work that will be put forward later on, in a subsequent phase of the project.</span></p>
+<p><span class="es">La idea es montar un sistema que se apoye en la infraestructura que ya tenéis, sin sustituirla. Hoy los pedidos llegan por distintos canales (WhatsApp, llamada y email) y el equipo comercial los introduce a mano en el sistema de gestión para que lleguen a preparación. El objetivo es que ese paso deje de ser manual: que cada pedido se interprete, se ordene y se traslade de forma automática al sistema, de modo que el equipo de preparación reciba la información directamente y sin intermediarios.</span><span class="en">The idea is to build a system that leans on the infrastructure you already have, without replacing it. Today orders come in through different channels (WhatsApp, phone call and email) and the sales team enters them by hand into the management system so they reach picking. The aim is for that step to stop being manual: for every order to be interpreted, sorted and transferred automatically into the system, so that the picking team receives the information directly and with no intermediaries.</span></p>
+<p><span class="es">Se abordará como proyecto independiente, con su propio diagnóstico y presupuesto, cuando la fase de marca y presencia esté en marcha.</span><span class="en">It will be tackled as a standalone project, with its own diagnosis and budget, once the brand and presence phase is under way.</span></p>
+</div></div></div>
+<h3><span class="es">Cómo se relacionan las ramas y en qué orden</span><span class="en">How the branches relate to each other and in what order</span></h3>
+<p><span class="es">El rebranding es la llave de todo: ninguna pieza que lleve el nombre encima puede producirse antes, ni web, ni packaging, ni catálogo, ni ficha de Google.</span><span class="en">The rebranding is the key to everything: no piece that carries the name on it can be produced before it, not the website, not the packaging, not the catalogue, not the Google listing.</span></p>
+<p><span class="es">Las dos ramas se alimentan mutuamente. La tienda da credibilidad a la distribución, porque quien vende al público cada día demuestra estándar. Y la distribución da autoridad a la tienda, porque el género que va a los restaurantes es el que se vende en el mostrador. Trabajarlas en paralelo no es dispersión: cada una hace más fuerte a la otra.</span><span class="en">The two branches feed each other. The shop gives credibility to the wholesale arm, because whoever sells to the public every day demonstrates a standard. And the wholesale arm gives authority to the shop, because the produce that goes to restaurants is the same that is sold over the counter. Working on them in parallel is not a scattering of effort: each one makes the other stronger.</span></p>
+<p><span class="es">Y no son dos marcas, es una marca con dos caras. Mismo nombre, mismo relato y mismo universo visual, con adaptación de tono y de materiales según a quién se habla. Es más barato, más coherente y construye un solo activo en vez de dos.</span><span class="en">And they are not two brands, they are one brand with two faces. Same name, same story and same visual universe, with tone and materials adapted according to who is being addressed. It is cheaper, more coherent and it builds a single asset instead of two.</span></p>
+</section>
+<section class="block reveal" id="mapa-de-marcas">
+  <span class="eyebrow"><span class="es">Sección 02</span><span class="en">Section 02</span></span>
+  <h2><span class="es">Mapa de marcas</span><span class="en">Brand map</span></h2>
+<p><span class="es">Antes de hablar de tareas hay que fijar el mapa de marcas, porque todo el trabajo cuelga de aquí. El proyecto tiene una marca madre y dos submarcas, en dos momentos distintos.</span><span class="en">Before talking about tasks the brand map has to be fixed, because all the work hangs off it. The project has a parent brand and two sub-brands, at two different moments.</span></p>
+<h3><span class="es">La marca madre</span><span class="en">The parent brand</span></h3>
+<p><span class="es">Es el rebranding principal: la nueva identidad de la empresa, hoy la distribuidora. Esta marca se usa en dos aplicaciones, que comparten todo el fondo pero cambian en la forma.</span><span class="en">This is the main rebranding: the company&#x27;s new identity, today the wholesale arm. This brand is used in two applications, which share everything underneath but change in form.</span></p>
+<ul class="clean">
+<li><span class="es">Aplicación distribución (HORECA) — la cara profesional, para restaurantes y hoteles.</span><span class="en">Wholesale application (HORECA) — the professional face, for restaurants and hotels.</span></li>
+<li><span class="es">Aplicación tienda (particulares) — la cara cercana, para el cliente de la tienda física.</span><span class="en">Shop application (private customers) — the approachable face, for the physical shop&#x27;s customer.</span></li>
+</ul>
+<p><span class="es">Es la misma marca, mismo nombre, mismo logo, mismos colores y mismo relato, hablando a dos públicos distintos. No construimos dos marcas: construimos una y la adaptamos.</span><span class="en">It is the same brand, same name, same logo, same colours and same story, speaking to two different audiences. We are not building two brands: we are building one and adapting it.</span></p>
+<h3><span class="es">Las dos submarcas del obrador</span><span class="en">The two sub-brands of the production kitchen</span></h3>
+<p><span class="es">La marca de producto oriental y la mediterránea. Son marcas independientes, con vida propia y público nacional, pero llevan el respaldo de la marca madre. Se construyen más adelante, cuando la marca madre ya signifique algo, porque ese respaldo solo aporta valor si hay una madre reconocible detrás.</span><span class="en">The oriental product brand and the Mediterranean one. They are independent brands, with a life of their own and a national audience, but they carry the backing of the parent brand. They are built later on, once the parent brand already means something, because that backing only adds value if there is a recognisable parent behind it.</span></p>
+<p><span class="es">En resumen: el fundamento y el brandbook de la marca madre primero; y las submarcas después, siguiendo la misma estructura.</span><span class="en">In short: the foundation and the brand book of the parent brand first; and the sub-brands afterwards, following the same structure.</span></p>
+<h3><span class="es">Qué es un brandbook y qué incluye</span><span class="en">What a brand book is and what it includes</span></h3>
+<p><span class="es">Un brandbook es el manual que define qué es la marca y cómo se usa. No es «el logo»: es el conjunto de reglas que hacen que todo lo que se produzca después (web, cajas, redes, rótulos) hable el mismo idioma. Sin él, cada pieza sale distinta y la marca no llega a construirse.</span><span class="en">A brand book is the manual that defines what the brand is and how it is used. It is not «the logo»: it is the set of rules that make everything produced afterwards (website, boxes, social, signage) speak the same language. Without it, every piece comes out different and the brand never gets built.</span></p>
+<p class="sub"><span class="es">Brandbook de la marca madre</span><span class="en">Parent brand brand book</span></p>
+<p><span class="es">Es el más completo, porque es el cimiento de todo. Incluye:</span><span class="en">This is the most complete one, because it is the foundation of everything. It includes:</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Sistema de logo.</strong> No son varios logos distintos, sino un logotipo con su familia de versiones: versión principal, variantes horizontal y vertical, símbolo o isotipo suelto, versiones positivo, negativo y una tinta, y los dos remates de aplicación (distribución y tienda).</span><span class="en"><strong>Logo system.</strong> Not several different logos, but one logotype with its family of versions: main version, horizontal and vertical variants, standalone symbol or icon, positive, negative and one-ink versions, and the two application endings (wholesale and shop).</span></li>
+<li><span class="es"><strong>Paleta de color.</strong> Principales, secundarios y neutros, con códigos para impresión y digital.</span><span class="en"><strong>Colour palette.</strong> Primary, secondary and neutral, with codes for print and digital.</span></li>
+<li><span class="es"><strong>Tipografía.</strong> Las tipografías de la marca y su jerarquía de uso.</span><span class="en"><strong>Typography.</strong> The brand&#x27;s typefaces and their hierarchy of use.</span></li>
+<li><span class="es"><strong>Lenguaje gráfico.</strong> Los elementos que dan personalidad más allá del logo: patrones, iconografía, formas y uso del espacio.</span><span class="en"><strong>Graphic language.</strong> The elements that give personality beyond the logo: patterns, iconography, shapes and use of space.</span></li>
+<li><span class="es"><strong>Dirección de fotografía.</strong> El criterio visual de la marca: qué se fotografía, con qué luz, con qué tono y con qué encuadre, definido para sus dos mundos, el profesional (producto en caja, almacén, reparto, cocina) y el de tienda (mostrador, gente, producto en mano, temporada). Es una decisión de marca, no de canal: gobierna por igual la web, el catálogo, el packaging y las redes.</span><span class="en"><strong>Photographic direction.</strong> The brand&#x27;s visual criteria: what is photographed, in what light, in what tone and with what framing, defined for its two worlds, the professional one (product in the box, warehouse, delivery round, kitchen) and the shop one (counter, people, product in hand, seasonality). It is a brand decision, not a channel one: it governs the website, the catalogue, the packaging and social equally.</span></li>
+<li><span class="es"><strong>Principios de composición.</strong> Cómo se ordenan los elementos en cualquier soporte.</span><span class="en"><strong>Composition principles.</strong> How elements are arranged on any support.</span></li>
+<li><span class="es"><strong>Tono de voz.</strong> Cómo habla la marca, con sus dos registros.</span><span class="en"><strong>Tone of voice.</strong> How the brand speaks, with its two registers.</span></li>
+<li><span class="es"><strong>Aplicaciones clave.</strong> Ejemplos visuales que demuestran cómo cobra vida la identidad en soportes reales, repartidos entre las dos aplicaciones de marca. Son piezas de demostración, no entregables finales de producción: esos se diseñan en las fases siguientes.</span><span class="en"><strong>Key applications.</strong> Visual examples that show how the identity comes to life on real materials, split across the two brand applications. They are demonstration pieces, not final production deliverables: those are designed in the following phases.</span></li>
+</ul>
+<p class="sub"><span class="es">La tienda física no lleva brandbook propio</span><span class="en">The shop does not get its own brand book</span></p>
+<p><span class="es">La tienda es una aplicación de la marca madre, no una identidad independiente. No diseñamos una marca aparte: definimos, dentro del manual único, cómo se traduce la identidad al contexto de tienda.</span><span class="en">The shop is an application of the parent brand, not a separate identity. We are not designing a brand apart: within the single brand book, we define how the identity translates into the shop context.</span></p>
+<p><span class="es">En la práctica, el brandbook dedica una o dos páginas específicas a esa aplicación: tono y dirección de contenido para el cliente de tienda, señalética y ambientación del espacio, y criterio visual del punto de venta. Se trata igual que el resto de aplicaciones clave del manual. Es más económico, más coherente y evita que parezcan dos empresas distintas.</span><span class="en">In practice, the brand book devotes one or two specific pages to that application: tone and content direction for the shop customer, signage and atmosphere of the space, and the visual criteria for the point of sale. It is treated exactly like every other key application in the book. It is cheaper, more coherent and stops the two from looking like two different companies.</span></p>
+<p class="sub"><span class="es">Brandbooks de las submarcas</span><span class="en">Sub-brand brand books</span></p>
+<p><span class="es">Cada submarca tiene su propio brandbook, porque son marcas independientes con su propio mundo. Son más ligeros que el de la madre, pero completos: logo y familia de versiones, paleta, tipografía, lenguaje gráfico, dirección de fotografía y de packaging, y la fórmula concreta del respaldo de la marca madre.</span><span class="en">Each sub-brand has its own brand book, because they are independent brands with their own world. They are lighter than the parent&#x27;s, but complete: logo and family of versions, palette, typography, graphic language, photography and packaging direction, and the specific formula for the parent brand&#x27;s endorsement.</span></p>
+<h3><span class="es">Alcance de ARGO en el trabajo de marca</span><span class="en">ARGO&#x27;s scope on the brand work</span></h3>
+<p><span class="es">Para evitar cualquier malentendido, dejamos explícito qué está dentro y qué está fuera de nuestro trabajo.</span><span class="en">To avoid any misunderstanding, we state explicitly what is inside and what is outside our work.</span></p>
+<p class="sub"><span class="es">Sí asumimos</span><span class="en">What we do take on</span></p>
+<ul class="clean">
+<li><span class="es">Toda la estrategia de marca y el diseño de identidad.</span><span class="en">All the brand strategy and the identity design.</span></li>
+<li><span class="es"><strong>El diseño gráfico de los soportes:</strong> artes finales de packaging y etiquetado, catálogo, señalética, papelería y piezas digitales.</span><span class="en"><strong>The graphic design of the materials:</strong> print-ready artwork for packaging and labelling, catalogue, signage, stationery and digital pieces.</span></li>
+<li><span class="es">El diseño de la web y la dirección del desarrollo.</span><span class="en">The website design and the direction of the development.</span></li>
+<li><span class="es">La dirección de fotografía de la marca y el plan de producción de las sesiones: definimos el criterio visual, el listado de tomas, los escenarios, el estilo y las referencias, y lo entregamos preparado para que la empresa fotográfica lo ejecute.</span><span class="en">The brand&#x27;s photography direction and the shoot production plan: we define the visual criteria, the shot list, the settings, the style and the references, and we hand it over ready for the photography company to execute.</span></li>
+<li><span class="es">La dirección y supervisión creativa para que el material producido cumpla el estándar de la marca.</span><span class="en">Creative direction and supervision so that the material produced meets the brand standard.</span></li>
+<li><span class="es">La coordinación y dirección de los colaboradores especializados que requiera cada fase: desarrollo web, producción e impresión y fotografía. ARGO es el interlocutor único y responde del resultado.</span><span class="en">The coordination and direction of the specialist collaborators each phase requires: web development, production and printing, and photography. ARGO is the single point of contact and answers for the result.</span></li>
+<li><span class="es">El montaje y la edición de las piezas de contenido y de publicidad a partir del material fotográfico.</span><span class="en">The assembly and editing of the content and advertising pieces from the photographic material.</span></li>
+</ul>
+<p class="sub"><span class="es">No asumimos</span><span class="en">What we do not take on</span></p>
+<ul class="clean">
+<li><span class="es"><strong>El naming.</strong> El nombre de la nueva marca lo aporta UPFruit. Nuestro trabajo parte de ese nombre para construir sobre él toda la identidad. Si en algún momento se quisiera trabajar el naming, se presupuestaría aparte.</span><span class="en"><strong>Naming.</strong> The name of the new brand is supplied by UPFruit. Our work starts from that name and builds the whole identity on top of it. If at any point you wanted to work on naming, it would be quoted separately.</span></li>
+<li><span class="es"><strong>La producción o fabricación física:</strong> impresión de packaging, producción de cajas, fabricación de rótulos o de material de punto de venta. Entregamos los archivos listos para el proveedor de producción.</span><span class="en"><strong>Physical production or manufacturing:</strong> packaging printing, box production, manufacture of signs or point-of-sale material. We deliver the files ready for the production supplier.</span></li>
+<li><span class="es"><strong>La producción fotográfica y audiovisual.</strong> No realizamos las sesiones: las dirige y ejecuta la empresa fotográfica a partir del plan que entregamos.</span><span class="en"><strong>Photographic and audiovisual production.</strong> We do not run the shoots: they are directed and executed by the photography company from the plan we deliver.</span></li>
+<li><span class="es">Los trámites legales, como el registro de marca en la OEPM o los permisos sanitarios.</span><span class="en">Legal formalities, such as trademark registration with the OEPM or food safety permits.</span></li>
+<li><span class="es">Cualquier trabajo ajeno al ámbito de la marca y el marketing digital.</span><span class="en">Any work outside the scope of brand and digital marketing.</span></li>
+</ul>
+<div class="note">
+<span class="eyebrow"><span class="es">Cómo generamos el contenido</span><span class="en">How we generate the content</span></span>
+<p><span class="es">No hacemos creación de contenido desde cero. El contenido se genera a partir del material obtenido en las sesiones fotográficas y audiovisuales: nosotros definimos el plan de dirección fotográfica, la empresa fotográfica lo ejecuta, y con ese banco de material montamos, editamos y publicamos las piezas según el sistema de contenido definido.</span><span class="en">We do not create content from scratch. The content is generated from the material obtained in the photographic and audiovisual shoots: we define the photography direction plan, the photography company executes it, and with that bank of material we assemble, edit and publish the pieces according to the defined content system.</span></p>
+</div>
+</section>
+<section class="block reveal" id="como-trabajamos">
+  <span class="eyebrow"><span class="es">Sección 03</span><span class="en">Section 03</span></span>
+  <h2><span class="es">Cómo trabajamos</span><span class="en">How we work</span></h2>
+<p><span class="es">El proyecto se ejecuta en fases encadenadas. Cada fase tiene un objetivo, unos entregables concretos por parte de ARGO, unas necesidades por parte de UPFruit y un criterio de cierre. Este es el detalle de qué incluye cada una.</span><span class="en">The project runs in linked phases. Each phase has an objective, specific deliverables from ARGO, specific requirements from UPFruit and a closing criterion. Here is the detail of what each one includes.</span></p>
+<h3><span class="es">Las fases se suman, no se sustituyen</span><span class="en">Phases add up, they do not replace each other</span></h3>
+<p><span class="es">Cada fase incorpora un trabajo nuevo, pero ninguna sustituye a la anterior: lo ya construido sigue gestionándose y mejorando. Cuando arranca la Fase 3, el contenido, el SEO y la presencia levantados en la Fase 2 no se detienen: continúan trabajándose en paralelo. Lo mismo ocurre en cada salto de fase.</span><span class="en">Each phase brings in new work, but none replaces the previous one: what has already been built carries on being managed and improved. When Phase 3 starts, the content, the SEO and the presence built in Phase 2 do not stop: they continue to be worked on in parallel. The same happens at every jump between phases.</span></p>
+<p><span class="es">Por eso el proyecto tiene dos capas que avanzan a la vez: la capa de construcción, que es el trabajo específico de cada fase y se entrega una vez; y la capa de continuidad, que mantiene vivo y en mejora todo lo anterior. A medida que se avanza, la primera se completa y la segunda crece.</span><span class="en">That is why the project has two layers advancing at once: the build layer, which is the specific work of each phase and is delivered once; and the continuity layer, which keeps everything already built alive and improving. As things progress, the first is completed and the second grows.</span></p>
+<p><span class="es">Al final de cada fase indicamos qué trabajo continuo queda activo en ese momento, para que en todo momento se vea qué se está construyendo y qué se está manteniendo.</span><span class="en">At the end of each phase we set out what ongoing work is active at that point, so that at all times you can see what is being built and what is being maintained.</span></p>
+<h3><span class="es">Volumen y revisiones</span><span class="en">Volume and revisions</span></h3>
+<p><span class="es">Cada fase tiene un alcance definido en número de piezas, que se detalla en su apartado. Todos los entregables incluyen una ronda de revisión.</span><span class="en">Each phase has a scope defined in number of pieces, detailed in its own section. All deliverables include one round of revision.</span></p>
+<p><span class="es">Las páginas, referencias, aplicaciones o piezas adicionales que se soliciten por encima de ese alcance se presupuestan aparte, siempre acordadas por adelantado.</span><span class="en">Any additional pages, product references, applications or pieces requested beyond that scope are quoted separately, always agreed in advance.</span></p>
+<h3><span class="es">Roadmap general</span><span class="en">General roadmap</span></h3>
+<ol class="steps">
+<li><span class="es"><strong>Fase 0 · Fundamento de marca.</strong> Estrategia, posicionamiento y brief maestro.</span><span class="en"><strong>Phase 0 · Brand foundation.</strong> Strategy, positioning and master brief.</span></li>
+<li><span class="es"><strong>Fase 1 · Identidad visual y brandbook.</strong> El sistema de marca completo.</span><span class="en"><strong>Phase 1 · Visual identity and brand book.</strong> The complete brand system.</span></li>
+<li><span class="es"><strong>Fase 2 · Digital.</strong> Web, perfiles, SEO y sistema visual de redes.</span><span class="en"><strong>Phase 2 · Digital.</strong> Website, profiles, SEO and social visual system.</span></li>
+<li><span class="es"><strong>Fase 3 · Comercial y físico.</strong> Catálogo, packaging, papelería y señalética.</span><span class="en"><strong>Phase 3 · Commercial and physical.</strong> Catalogue, packaging, stationery and signage.</span></li>
+<li><span class="es"><strong>Fase 4 · Captación.</strong> Montaje técnico, conceptos de campaña y lanzamiento.</span><span class="en"><strong>Phase 4 · Acquisition.</strong> Technical setup, campaign concepts and launch.</span></li>
+<li><span class="es"><strong>Trabajo continuo · Dirección de marketing.</strong> Arranca al cerrar la Fase 2 y no se detiene.</span><span class="en"><strong>Ongoing work · Marketing direction.</strong> Starts when Phase 2 closes and does not stop.</span></li>
+<li><span class="es"><strong>Fase 5 · Submarcas del obrador.</strong> Misma estructura, marca a marca.</span><span class="en"><strong>Phase 5 · Production kitchen sub-brands.</strong> Same structure, brand by brand.</span></li>
+<li><span class="es"><strong>Carril paralelo · Sistema de existencias.</strong> Diagnóstico y definición, desde el inicio.</span><span class="en"><strong>Parallel track · Stock system.</strong> Diagnosis and definition, from the start.</span></li>
+<li><span class="es"><strong>Fase 6 · Sistemas de IA.</strong> Automatización de pedidos, cuando se retome.</span><span class="en"><strong>Phase 6 · AI systems.</strong> Order automation, whenever it is picked up again.</span></li>
+</ol>
+<div class="acc-tools"><button type="button" onclick="accAll(this,true)"><span class="es">Abrir todo</span><span class="en">Expand all</span></button><button type="button" onclick="accAll(this,false)"><span class="es">Cerrar todo</span><span class="en">Collapse all</span></button></div>
+<div class="acc open">
+  <button class="acc-head" aria-expanded="true">
+    <span><span class="ttl"><span class="es">Fase 0 · Fundamento de marca</span><span class="en">Phase 0 · Brand foundation</span></span><span class="tag"><span class="es">6.000 € · pago único</span><span class="en">6.000 € · one-off</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: entender el negocio a fondo y definir sobre qué se va a construir la marca. Es la fase que convierte información dispersa en un criterio claro.</span><span class="en">Objective: understand the business in depth and define what the brand is going to be built on. This is the phase that turns scattered information into clear criteria.</span></p>
+<p><span class="es">No se puede diseñar una identidad sin saber qué se vende, a quién y con qué diferencia. Esta fase lo resuelve primero, y el documento que produce se convierte en el brief maestro de todo lo que viene después: identidad, web, materiales y campañas parten de aquí.</span><span class="en">You cannot design an identity without knowing what is sold, to whom and with what difference. This phase settles that first, and the document it produces becomes the master brief for everything that follows: identity, website, materials and campaigns all start here.</span></p>
+<p><span class="es">La distinción con la fase siguiente es sencilla: esta fase define qué es la marca; el brandbook define cómo se ve y cómo se comporta. Una responde al fondo, la otra a la forma, y en ese orden.</span><span class="en">The distinction with the next phase is simple: this phase defines what the brand is; the brand book defines how it looks and how it behaves. One answers the substance, the other the form, and in that order.</span></p>
+<p><span class="es">La planteamos deliberadamente ágil y práctica. No es una fase de estrategia extensa: es el mínimo necesario para trabajar con criterio en lugar de a ciegas, porque hoy no existe documentación previa sobre producto, audiencias, posicionamiento ni competencia sobre la que apoyarse.</span><span class="en">We have deliberately kept it lean and practical. It is not an extensive strategy phase: it is the minimum needed to work with judgement instead of blind, because today there is no prior documentation on product, audiences, positioning or competition to lean on.</span></p>
+<p class="sub"><span class="es">Qué trabajamos</span><span class="en">What we work on</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Definición de negocio y producto:</strong> qué se vende, cómo se vende y qué gama cubre cada rama.</span><span class="en"><strong>Business and product definition:</strong> what is sold, how it is sold and what range each branch covers.</span></li>
+<li><span class="es"><strong>Definición de audiencias:</strong> el cliente profesional de HORECA y el consumidor de tienda, con sus motivaciones y objeciones.</span><span class="en"><strong>Audience definition:</strong> the professional HORECA customer and the shop consumer, with their motivations and objections.</span></li>
+<li><span class="es">Investigación de mercado y competencia.</span><span class="en">Market and competitor research.</span></li>
+<li><span class="es"><strong>Posicionamiento y diferenciales:</strong> el eje que debe ser verdad en las dos ramas.</span><span class="en"><strong>Positioning and differentiators:</strong> the axis that has to be true in both branches.</span></li>
+<li><span class="es">Pilares de marca y mensajes clave.</span><span class="en">Brand pillars and key messages.</span></li>
+<li><span class="es"><strong>Recopilación del material existente:</strong> información de producto, textos e imágenes disponibles.</span><span class="en"><strong>Collection of the existing material:</strong> product information, copy and images available.</span></li>
+<li><span class="es">Identificación del material que todavía hay que producir.</span><span class="en">Identification of the material that still has to be produced.</span></li>
+<li><span class="es"><strong>Inventario de gama:</strong> cuántas referencias se comercializan, cómo están categorizadas y cuántas deben aparecer en la web y en el catálogo. Es la variable que más condiciona el alcance de las fases siguientes.</span><span class="en"><strong>Range inventory:</strong> how many references are sold, how they are categorised and how many have to appear on the website and in the catalogue. It is the variable that most determines the scope of the following phases.</span></li>
+</ul>
+<p class="sub"><span class="es">Entregable</span><span class="en">Deliverable</span></p>
+<p><span class="es">Una presentación de fundamento de marca de aproximadamente diez páginas, concisa y accionable, que funciona como brief para todas las fases siguientes.</span><span class="en">A brand foundation presentation of roughly ten pages, concise and actionable, which works as the brief for all the following phases.</span></p>
+<p class="sub"><span class="es">Qué necesitamos</span><span class="en">What we need</span></p>
+<ul class="clean">
+<li><span class="es">Sesión de trabajo con la propiedad y disponibilidad para resolver dudas durante la investigación.</span><span class="en">A working session with the owners and availability to answer questions during the research.</span></li>
+<li><span class="es">Acceso al listado de referencias y a la información de producto y gama, con su categorización actual.</span><span class="en">Access to the reference list and to the product and range information, with its current categorisation.</span></li>
+</ul>
+<p><span class="es">Cierre de fase: documento de fundamento de marca aprobado.</span><span class="en">Phase close: brand foundation document approved.</span></p>
+<p class="sub"><span class="es">Trabajo continuo en este punto</span><span class="en">Ongoing work at this point</span></p>
+<p><span class="es">Todavía no hay capa de continuidad activa: no existe marca ni presencia que mantener. Lo único que avanza en paralelo es el carril de existencias, que va por su cuenta desde el inicio.</span><span class="en">There is no continuity layer active yet: there is no brand or presence to maintain. The only thing moving in parallel is the stock track, which runs on its own from the start.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Fase 1 · Identidad visual y brandbook</span><span class="en">Phase 1 · Visual identity and brand book</span></span><span class="tag"><span class="es">8.500 € · pago único</span><span class="en">8.500 € · one-off</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: construir el sistema de marca completo a partir del fundamento aprobado. Es la fase que desbloquea toda la producción posterior y no admite solapamiento.</span><span class="en">Objective: build the complete brand system from the approved foundation. This is the phase that unlocks all the production that follows, and it admits no overlap.</span></p>
+<p class="sub"><span class="es">Cómo trabajamos, paso a paso</span><span class="en">How we work, step by step</span></p>
+<ol class="steps">
+<li><span class="es"><strong>Dirección de logotipo.</strong> Presentamos tres propuestas con enfoques distintos. Vosotros elegís una y la refinamos en una ronda de revisión.</span><span class="en"><strong>Logo direction.</strong> We present three proposals with different approaches. You choose one and we refine it in one round of revision.</span></li>
+<li><span class="es"><strong>Dirección cromática.</strong> Presentamos tres esquemas de color. Se elige uno y se ajusta en una ronda de revisión.</span><span class="en"><strong>Colour direction.</strong> We present three colour schemes. One is chosen and adjusted in one round of revision.</span></li>
+<li><span class="es"><strong>Sistema visual completo.</strong> Sobre el logotipo y el color aprobados construimos el resto: tipografía, lenguaje gráfico, variantes y usos del logotipo y principios de composición.</span><span class="en"><strong>Complete visual system.</strong> On top of the approved logo and colour we build the rest: typography, graphic language, logo variants and usage, and composition principles.</span></li>
+<li><span class="es"><strong>Dirección de fotografía.</strong> Definimos el criterio visual con el que se retrata la marca, con sus dos mundos. Es la referencia que después guía cualquier producción de imagen, sea para la web, el catálogo, el packaging o las redes.</span><span class="en"><strong>Photography direction.</strong> We define the visual criteria by which the brand is portrayed, with its two worlds. It is the reference that then guides any image production, whether for the website, the catalogue, the packaging or social.</span></li>
+<li><span class="es"><strong>Brandbook y aplicaciones.</strong> Recogemos todo en el manual, con las dos aplicaciones de marca definidas y las piezas que demuestran cómo funciona la identidad sobre soportes reales.</span><span class="en"><strong>Brand book and applications.</strong> We bring it all together in the book, with the two brand applications defined and the pieces that demonstrate how the identity works on real materials.</span></li>
+</ol>
+<p class="sub"><span class="es">Qué incluye la fase</span><span class="en">What the phase includes</span></p>
+<ul class="clean">
+<li><span class="es">Tres propuestas de logotipo y una ronda de revisión sobre la elegida.</span><span class="en">Three logo proposals and one round of revision on the chosen one.</span></li>
+<li><span class="es">Tres esquemas cromáticos y una ronda de revisión sobre el elegido.</span><span class="en">Three colour schemes and one round of revision on the chosen one.</span></li>
+<li><span class="es"><strong>Sistema de identidad visual completo:</strong> tipografía, lenguaje gráfico, variantes y usos del logotipo y principios de composición.</span><span class="en"><strong>Complete visual identity system:</strong> typography, graphic language, logo variants and usage, and composition principles.</span></li>
+<li><span class="es"><strong>Dirección de fotografía de la marca:</strong> criterio visual, estilo, tono y tratamiento, definidos para las dos aplicaciones.</span><span class="en"><strong>Brand photography direction:</strong> visual criteria, style, tone and treatment, defined for both applications.</span></li>
+<li><span class="es">Aplicaciones clave que demuestran la identidad en uso.</span><span class="en">Key applications that show the identity in use.</span></li>
+<li><span class="es">Brandbook final con las dos aplicaciones de marca y archivos en todos los formatos.</span><span class="en">Final brand book with both brand applications and files in every format.</span></li>
+<li><span class="es">Plan de transición del nombre para los clientes actuales de distribución.</span><span class="en">Name transition plan for your current wholesale clients.</span></li>
+</ul>
+<p class="sub"><span class="es">Qué necesitamos</span><span class="en">What we need</span></p>
+<ul class="clean">
+<li><span class="es">El nombre definitivo de la nueva marca, que aportáis vosotros.</span><span class="en">The final name of the new brand, which you provide.</span></li>
+<li><span class="es">Decisiones dentro de plazo en cada punto de elección.</span><span class="en">Decisions on time at every choice point.</span></li>
+</ul>
+<p><span class="es">Cierre de fase: identidad y brandbook aprobados por escrito.</span><span class="en">Phase close: identity and brand book approved in writing.</span></p>
+<div class="note">
+<span class="eyebrow"><span class="es">Sobre el naming</span><span class="en">On naming</span></span>
+<p><span class="es">El nombre de la nueva marca lo aportáis vosotros. Esta fase parte de ese nombre para construir sobre él toda la identidad visual, y no incluye el trabajo de creación de nombre ni la verificación de su disponibilidad legal. Si más adelante quisierais trabajar el naming, se presupuestaría como un proyecto aparte.</span><span class="en">The name of the new brand comes from you. This phase starts from that name and builds the whole visual identity on top of it; it does not include creating the name or checking its legal availability. If you later want to work on naming, it would be quoted as a separate project.</span></p>
+</div>
+<div class="note">
+<span class="eyebrow"><span class="es">Regla que atraviesa todo el proyecto</span><span class="en">A rule that runs through the whole project</span></span>
+<p><span class="es">Nada que lleve el nombre encima se produce hasta que la identidad esté aprobada: ni web, ni packaging, ni catálogo, ni señalética. Producir antes es trabajo perdido.</span><span class="en">Nothing carrying the name gets produced until the identity is approved: no website, no packaging, no catalogue, no signage. Producing before that is wasted work.</span></p>
+</div>
+<p class="sub"><span class="es">Trabajo continuo en paralelo a esta fase</span><span class="en">Ongoing work running in parallel with this phase</span></p>
+<p><span class="es">Durante esta fase el trabajo es de construcción, no de mantenimiento: todavía no hay presencia publicada que gestionar. En paralelo sigue avanzando el carril de existencias.</span><span class="en">During this phase the work is construction, not maintenance: there is no published presence to manage yet. In parallel, the stock track keeps moving forward.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Fase 2 · Digital</span><span class="en">Phase 2 · Digital</span></span><span class="tag"><span class="es">16.500 € · pago único</span><span class="en">16.500 € · one-off</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: dejar de ser invisibles. Que quien busque a la empresa la encuentre y la crea. Arranca cuando la identidad ya está aprobada.</span><span class="en">Objective: stop being invisible. Anyone looking for the company should find it and believe it. It starts once the identity has been approved.</span></p>
+<p class="sub"><span class="es">Plan de producción fotográfica</span><span class="en">Photography production plan</span></p>
+<p><span class="es">Es lo primero de esta fase, porque el material visual alimenta todo lo demás y suele ser el cuello de botella del proyecto.</span><span class="en">This is the first thing in the phase, because the visual material feeds everything else and is usually the bottleneck of the project.</span></p>
+<p><span class="es">Partimos de la dirección de fotografía ya definida en el brandbook y la traducimos en el documento operativo que la empresa fotográfica necesita para trabajar: listado concreto de tomas, escenarios, orden de sesión, referencias y especificaciones de formato. Cubre los dos mundos visuales de la marca, el profesional y el de tienda.</span><span class="en">We start from the photography direction already defined in the brand book and turn it into the working document the photography company needs in order to work: a concrete shot list, settings, shoot running order, references and format specifications. It covers both of the brand&#x27;s visual worlds, the professional one and the shop one.</span></p>
+<p><span class="es">La sesión la realiza el proveedor fotográfico. Nosotros la dirigimos, la supervisamos y después trabajamos con el material obtenido. El banco de imágenes que sale de aquí alimenta la web, las redes y, más adelante, los materiales comerciales.</span><span class="en">The shoot itself is carried out by the photography supplier. We direct it, supervise it and then work with the material produced. The image bank that comes out of it feeds the website, social media and, later on, the sales materials.</span></p>
+<div class="note">
+<span class="eyebrow"><span class="es">Criterio y ejecución, separados</span><span class="en">Criteria and execution, kept separate</span></span>
+<p><span class="es">La dirección de fotografía (qué estética tiene la marca) se decide en la Fase 1, dentro del brandbook, porque es una decisión de marca que gobierna todos los soportes. El plan de producción (qué se fotografía, dónde y en qué orden) se prepara en esta fase, porque es ejecución. Uno define, el otro ejecuta.</span><span class="en">The photography direction (what the brand looks like) is decided in Phase 1, inside the brand book, because it is a brand decision that governs every medium. The production plan (what gets photographed, where and in what order) is prepared in this phase, because it is execution. One defines, the other executes.</span></p>
+</div>
+<p class="sub"><span class="es">Web</span><span class="en">Website</span></p>
+<p><span class="es">Una sola web con dos caminos. Desde la home el visitante elige si es profesional o si viene a la tienda, y a partir de ahí ve contenidos y lenguaje diferentes.</span><span class="en">One website with two paths. From the home page the visitor chooses whether they are a professional or are coming to the shop, and from there they see different content and language.</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Diseño y dirección de arte:</strong> entre cuatro y cinco páginas principales para escritorio, más referencias visuales de adaptación a móvil, que fijan el sistema visual del sitio.</span><span class="en"><strong>Design and art direction:</strong> four to five main pages for desktop, plus visual references for the mobile adaptation, setting the visual system of the site.</span></li>
+<li><span class="es"><strong>Producción completa:</strong> adaptación del sistema al resto de páginas y a todos los tamaños de pantalla, componentes, funcionalidad e implementación técnica hasta la publicación.</span><span class="en"><strong>Full production:</strong> adapting the system to the remaining pages and to every screen size, components, functionality and technical implementation through to launch.</span></li>
+<li><span class="es"><strong>Camino profesional:</strong> gama y catálogo por familias, cómo trabajamos (zonas de reparto, horarios, pedido mínimo), prueba social de restaurantes clientes y formulario de alta o solicitud de presupuesto.</span><span class="en"><strong>Professional path:</strong> range and catalogue by product family, how we work (delivery round areas, schedules, minimum order), social proof from restaurant clients, and a sign-up or quote request form.</span></li>
+<li><span class="es"><strong>Camino tienda:</strong> ubicación, horarios, producto de temporada y encargo con recogida cuando se active.</span><span class="en"><strong>Shop path:</strong> location, opening hours, seasonal produce and order-and-collect once it is switched on.</span></li>
+<li><span class="es"><strong>Capa común:</strong> quiénes somos, relato de origen, blog de temporada y contacto.</span><span class="en"><strong>Shared layer:</strong> who we are, origin story, seasonal blog and contact.</span></li>
+</ul>
+<p class="sub"><span class="es">SEO</span><span class="en">SEO</span></p>
+<p><span class="es">Son dos trabajos distintos sobre el mismo dominio. SEO local para la tienda, para aparecer cuando alguien busca producto fresco cerca de su casa. Y SEO de servicio para la distribución, para aparecer cuando un restaurante busca proveedor en su zona. Incluye estructura, contenidos base y optimización técnica.</span><span class="en">These are two different jobs on the same domain. Local SEO for the shop, to show up when someone searches for fresh produce near their home. And service SEO for the wholesale arm, to show up when a restaurant looks for a supplier in its area. It covers structure, base content and technical optimisation.</span></p>
+<p class="sub"><span class="es">Perfiles y fichas</span><span class="en">Profiles and listings</span></p>
+<ul class="clean">
+<li><span class="es">Fichas de Google Business de la distribuidora y de la tienda, con categorías, servicios, horarios y zona de actuación, más la activación de la solicitud de reseñas.</span><span class="en">Google Business listings for the wholesale arm and for the shop, with categories, services, opening hours and service area, plus switching on review requests.</span></li>
+<li><span class="es">LinkedIn de empresa, montado y optimizado como canal profesional.</span><span class="en">Company LinkedIn, set up and optimised as a professional channel.</span></li>
+<li><span class="es"><strong>Instagram:</strong> reactivación del perfil existente o apertura, con bio y feed inicial planteados para servir a los dos públicos.</span><span class="en"><strong>Instagram:</strong> reactivating the existing profile or opening a new one, with a bio and an initial feed built to serve both audiences.</span></li>
+</ul>
+<p class="sub"><span class="es">Sistema visual de redes y contenido</span><span class="en">Social media visual system and content</span></p>
+<p><span class="es">Aquí no se empieza a publicar: se construye el sistema que después se ejecuta cada mes. Definimos el sistema visual para redes, los pilares de contenido, el calendario editorial, el tono y las plantillas.</span><span class="en">This is not where publishing begins: it is where we build the system that is then executed every month. We define the visual system for social media, the content pillars, the editorial calendar, the tone and the templates.</span></p>
+<p><span class="es">Incluye las nueve primeras publicaciones y plantillas de Instagram, que sirven a la vez como arranque del perfil y como modelo para toda la producción posterior. La ejecución mensual pertenece al trabajo continuo.</span><span class="en">It includes the first nine Instagram posts and templates, which work both as the launch of the profile and as the model for all later production. Monthly execution belongs to the ongoing work.</span></p>
+<p class="sub"><span class="es">Colaboradores en esta fase</span><span class="en">Collaborators on this phase</span></p>
+<p><span class="es">El diseño y la dirección de arte del sitio, la producción responsive y la implementación técnica se reparten dentro de nuestro equipo de colaboradores, con un desarrollador especializado en la parte técnica. ARGO define, dirige y valida el conjunto; vosotros tenéis un único interlocutor y una única responsable del resultado.</span><span class="en">The design and art direction of the site, the responsive production and the technical implementation are shared out within our team of collaborators, with a developer specialising in the technical side. ARGO defines, directs and signs off the whole; you have a single point of contact and a single person accountable for the result.</span></p>
+<p class="sub"><span class="es">Qué necesitamos</span><span class="en">What we need</span></p>
+<ul class="clean">
+<li><span class="es">Disponibilidad para las sesiones fotográficas, información de gama, zonas de reparto y condiciones de servicio, y la decisión sobre si las tarifas profesionales son públicas o privadas.</span><span class="en">Availability for the photo shoots, range information, delivery round areas and service conditions, and the decision on whether professional rates are public or private.</span></li>
+</ul>
+<p><span class="es">Cierre de fase: web publicada, perfiles activos y sistema de contenido entregado.</span><span class="en">Phase close: website live, profiles active and content system delivered.</span></p>
+<p class="sub"><span class="es">Trabajo continuo que arranca con esta fase</span><span class="en">Ongoing work that starts with this phase</span></p>
+<p><span class="es">Al cerrar la Fase 2 se activa la capa de continuidad, que ya no se detiene. A partir de aquí, cada mes:</span><span class="en">When Phase 2 closes, the continuity layer switches on and does not stop again. From here on, every month:</span></p>
+<ul class="clean">
+<li><span class="es">Producción de 9 creatividades (contenido orgánico y adaptaciones para publicidad).</span><span class="en">Production of 9 creatives (organic content and adaptations for advertising).</span></li>
+<li><span class="es"><strong>Publicación y gestión de redes:</strong> Instagram y LinkedIn, con comunidad y respuesta.</span><span class="en"><strong>Publishing and social media management:</strong> Instagram and LinkedIn, with community and responses.</span></li>
+<li><span class="es">Mantenimiento y mejora del SEO en las dos ramas.</span><span class="en">SEO maintenance and improvement across both branches.</span></li>
+<li><span class="es">Mantenimiento de las fichas de Google Business y de la web.</span><span class="en">Maintenance of the Google Business listings and of the website.</span></li>
+<li><span class="es">Análisis y reporting mensual.</span><span class="en">Monthly analysis and reporting.</span></li>
+<li><span class="es">Reuniones de seguimiento y acompañamiento continuo.</span><span class="en">Review meetings and ongoing support.</span></li>
+</ul>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Fase 3 · Comercial y físico</span><span class="en">Phase 3 · Sales and physical</span></span><span class="tag"><span class="es">10.250 € · pago único</span><span class="en">10.250 € · one-off</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: dar munición al equipo comercial y llevar la marca al mundo físico. Es la fase en la que el comercial nota la diferencia.</span><span class="en">Objective: give the sales team ammunition and take the brand into the physical world. This is the phase where the sales rep feels the difference.</span></p>
+<p class="sub"><span class="es">Qué diseñamos</span><span class="en">What we design</span></p>
+<ul class="clean">
+<li><span class="es">Catálogo o presentación de empresa para HORECA: hasta diez páginas.</span><span class="en">Catalogue or company presentation for HORECA: up to ten pages.</span></li>
+<li><span class="es">Diseño de packaging y etiquetado: tres modelos o referencias iniciales.</span><span class="en">Packaging and labelling design: three initial models or product references.</span></li>
+<li><span class="es">Señalética y materiales de punto de venta: cinco aplicaciones clave.</span><span class="en">Signage and point-of-sale materials: five key applications.</span></li>
+<li><span class="es">Papelería, firmas de email y tarjetas.</span><span class="en">Stationery, email signatures and business cards.</span></li>
+</ul>
+<p class="sub"><span class="es">Alcance</span><span class="en">Scope</span></p>
+<p><span class="es">Entregamos los artes finales listos para producción, con las especificaciones técnicas que cada soporte requiere. La empresa de producción e impresión la elige UPFruit; a partir de ahí, el trato con ella lo llevamos nosotros. Le enviamos el diseño y las especificaciones para que sepa exactamente qué tiene que fabricar, resolvemos sus dudas técnicas y revisamos las pruebas antes de dar el visto bueno a la producción. El coste de impresión, fabricación e instalación corre por cuenta de UPFruit y no forma parte de nuestra cuota.</span><span class="en">We deliver the final artwork ready for production, with the technical specifications each medium requires. UPFruit chooses the production and printing company; from there, we handle the relationship with them. We send them the design and the specifications so they know exactly what they have to produce, resolve their technical questions and review the proofs before signing off production. The cost of printing, manufacturing and installation is borne by UPFruit and is not part of our fee.</span></p>
+<p class="sub"><span class="es">Qué necesitamos</span><span class="en">What we need</span></p>
+<ul class="clean">
+<li><span class="es">Listado real de referencias, condiciones comerciales, medidas y proveedor de cajas y etiquetas, y medidas del local para la señalética.</span><span class="en">A real list of product references, commercial terms, dimensions and supplier for boxes and labels, and the measurements of the premises for the signage.</span></li>
+</ul>
+<p><span class="es">Cierre de fase: materiales entregados en formato de producción y equipo comercial formado en su uso.</span><span class="en">Phase close: materials delivered in production format and the sales team trained in how to use them.</span></p>
+<p class="sub"><span class="es">Trabajo continuo en paralelo a esta fase</span><span class="en">Ongoing work running in parallel with this phase</span></p>
+<p><span class="es">Mientras se producen los materiales, todo lo levantado en la Fase 2 sigue trabajándose cada mes sin interrupción:</span><span class="en">While the materials are being produced, everything built in Phase 2 keeps being worked on every month without interruption:</span></p>
+<ul class="clean">
+<li><span class="es">Producción de 9 creatividades.</span><span class="en">Production of 9 creatives.</span></li>
+<li><span class="es">Publicación y gestión de redes.</span><span class="en">Publishing and social media management.</span></li>
+<li><span class="es">SEO, web y fichas de Google.</span><span class="en">SEO, website and Google listings.</span></li>
+<li><span class="es">Análisis, reporting y reuniones de seguimiento.</span><span class="en">Analysis, reporting and review meetings.</span></li>
+</ul>
+<p><span class="es">Los nuevos materiales se incorporan además al circuito de contenido: catálogo, packaging y punto de venta pasan a ser material comunicable en redes y en los soportes digitales.</span><span class="en">The new materials also feed into the content circuit: catalogue, packaging and point of sale become material that can be communicated on social media and across the digital channels.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Fase 4 · Captación</span><span class="en">Phase 4 · Acquisition</span></span><span class="tag"><span class="es">11.500 € · pago único</span><span class="en">11.500 € · one-off</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: amplificar lo construido. No antes: publicidad sin marca ni materiales detrás es dinero mal invertido. Esta fase cubre el montaje; la gestión mensual posterior pertenece al trabajo continuo.</span><span class="en">Objective: amplify what has been built. Not before: advertising with no brand and no materials behind it is money badly spent. This phase covers the set-up; the monthly management that follows belongs to the ongoing work.</span></p>
+<p class="sub"><span class="es">Qué incluye el montaje</span><span class="en">What the set-up includes</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Configuración técnica completa:</strong> píxeles, GA4, Google Tag Manager y conversiones.</span><span class="en"><strong>Full technical configuration:</strong> pixels, GA4, Google Tag Manager and conversions.</span></li>
+<li><span class="es"><strong>Estrategia de medios:</strong> canales, públicos, mensajes y estructura de campañas por rama.</span><span class="en"><strong>Media strategy:</strong> channels, audiences, messages and campaign structure by branch.</span></li>
+<li><span class="es"><strong>Dirección visual de campaña:</strong> tres conceptos o direcciones creativas distintas.</span><span class="en"><strong>Campaign visual direction:</strong> three different concepts or creative directions.</span></li>
+<li><span class="es">Una creatividad máster por concepto y su adaptación a los formatos principales: alrededor de nueve piezas finales.</span><span class="en">One master creative per concept and its adaptation to the main formats: around nine final pieces.</span></li>
+<li><span class="es">Creación y lanzamiento de las campañas en Meta Ads y Google Ads, con un alcance inicial de hasta dos campañas por plataforma.</span><span class="en">Creation and launch of the campaigns on Meta Ads and Google Ads, with an initial scope of up to two campaigns per platform.</span></li>
+<li><span class="es"><strong>Cobertura de las dos ramas del negocio:</strong> se trabajan campañas dirigidas a la tienda física y campañas dirigidas a la empresa de distribución, cada una con sus propios públicos, mensajes y objetivos.</span><span class="en"><strong>Coverage of both branches of the business:</strong> campaigns aimed at the physical shop and campaigns aimed at the wholesale company, each with its own audiences, messages and objectives.</span></li>
+<li><span class="es">Definición del cuadro de mando y de los KPI separados por rama.</span><span class="en">Definition of the dashboard and the KPIs, split by branch.</span></li>
+</ul>
+<p class="sub"><span class="es">Para qué sirve esta fase</span><span class="en">What this phase is for</span></p>
+<p><span class="es">Las fases anteriores construyen la marca, la presencia y los materiales. Esta sirve para amplificarlos: poner todo ese trabajo delante de la gente que interesa, en lugar de esperar a que llegue sola.</span><span class="en">The earlier phases build the brand, the presence and the materials. This one amplifies them: it puts all that work in front of the people who matter, instead of waiting for them to turn up on their own.</span></p>
+<p><span class="es">Se trabajan las dos ramas del negocio en paralelo. En la tienda, el objetivo es atraer más gente al local y ampliar el radio de clientes más allá del boca a boca. En la distribución, apoyar al equipo comercial: que la marca sea visible cuando hay una oportunidad real y que el comercial llegue a las visitas con el terreno ya preparado.</span><span class="en">Both branches of the business are worked in parallel. In the shop, the objective is to draw more people into the premises and widen the customer radius beyond word of mouth. In wholesale, it is to support the sales team: to make the brand visible when there is a real opportunity, and to get the sales rep to meetings with the ground already prepared.</span></p>
+<p><span class="es">Va en este punto y no antes porque la publicidad amplifica lo que hay. Llevar tráfico de pago a una marca sin identidad o a una web que aún no existe es dinero mal invertido: primero se construye, después se amplifica.</span><span class="en">It sits at this point and not earlier because advertising amplifies what is already there. Sending paid traffic to a brand with no identity, or to a website that does not yet exist, is money badly spent: first you build, then you amplify.</span></p>
+<p class="sub"><span class="es">Cómo se mide</span><span class="en">How it is measured</span></p>
+<p><span class="es">Las dos ramas son embudos distintos y no pueden juzgarse con la misma vara. La tienda da resultados relativamente rápidos y medibles. La distribución tiene un ciclo más largo y una atribución más difusa, porque quien cierra la venta es una persona y no un clic. El cuadro de mando refleja esa diferencia con métricas separadas.</span><span class="en">The two branches are different funnels and cannot be judged by the same yardstick. The shop delivers results that are relatively fast and measurable. Wholesale has a longer cycle and blurrier attribution, because the person who closes the sale is a person, not a click. The dashboard reflects that difference with separate metrics.</span></p>
+<p class="sub"><span class="es">Qué necesitamos</span><span class="en">What we need</span></p>
+<ul class="clean">
+<li><span class="es">Presupuesto publicitario definido y, en distribución, feedback del equipo comercial sobre la calidad de lo que llega.</span><span class="en">A defined advertising budget and, in wholesale, feedback from the sales team on the quality of what comes through.</span></li>
+</ul>
+<p class="sub"><span class="es">Trabajo continuo que se suma con esta fase</span><span class="en">Ongoing work added by this phase</span></p>
+<p><span class="es">Además de todo lo anterior, que sigue corriendo cada mes, la capa de continuidad incorpora a partir de aquí la gestión publicitaria:</span><span class="en">On top of everything above, which keeps running every month, the continuity layer takes on advertising management from this point on:</span></p>
+<ul class="clean">
+<li><span class="es">Gestión y optimización diaria de las campañas en las dos ramas.</span><span class="en">Daily management and optimisation of the campaigns across both branches.</span></li>
+<li><span class="es">Producción y renovación de creatividades para publicidad, dentro del volumen mensual de piezas.</span><span class="en">Production and refreshing of advertising creatives, within the monthly volume of pieces.</span></li>
+<li><span class="es">Seguimiento del rendimiento y ajuste de públicos, mensajes y presupuestos.</span><span class="en">Performance tracking and adjustment of audiences, messages and budgets.</span></li>
+<li><span class="es">Reporting con métricas separadas por rama.</span><span class="en">Reporting with metrics split by branch.</span></li>
+</ul>
+<p><span class="es">Es el momento en el que la carga mensual alcanza su volumen completo: contenido, redes, SEO, campañas y análisis funcionando a la vez.</span><span class="en">This is the point at which the monthly workload reaches full volume: content, social, SEO, campaigns and analysis all running at once.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Trabajo continuo · Dirección de marketing</span><span class="en">Ongoing work · Marketing direction</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">A partir del cierre de la Fase 2, ARGO asume la función de dirección de marketing de UPFruit. No somos un proveedor al que se le encargan piezas sueltas: somos vuestro departamento de marketing, externalizado.</span><span class="en">From the close of Phase 2, ARGO takes on the marketing direction function for UPFruit. We are not a supplier you commission odd pieces from: we are your marketing department, outsourced.</span></p>
+<p><span class="es">Esto significa que nos hacemos cargo de todo el marketing y el marketing digital de la empresa. Definimos la estrategia, priorizamos qué se hace y en qué orden, decidimos dónde se invierte y respondemos de los resultados. Vosotros os dedicáis a vuestro negocio; nosotros nos ocupamos de que la marca crezca.</span><span class="en">That means we take charge of all the company&#x27;s marketing and digital marketing. We define the strategy, set the priorities and the order of play, decide where the money goes and answer for the results. You get on with your business; we make sure the brand grows.</span></p>
+<p class="sub"><span class="es">Qué implica en la práctica</span><span class="en">What that means in practice</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Dirección estratégica.</strong> Planificación trimestral, decisiones sobre canales e inversión, y ajuste continuo del rumbo según lo que digan los datos.</span><span class="en"><strong>Strategic direction.</strong> Quarterly planning, decisions on channels and investment, and continuous course correction based on what the data says.</span></li>
+<li><span class="es"><strong>Ejecución completa.</strong> Contenido, redes, campañas, SEO y web. Todo el trabajo operativo del mes, sin que tengáis que coordinar nada.</span><span class="en"><strong>Full execution.</strong> Content, social, campaigns, SEO and website. All the operational work of the month, without you having to coordinate anything.</span></li>
+<li><span class="es"><strong>Coordinación de proveedores.</strong> Somos el interlocutor único con la empresa fotográfica, el desarrollador, la imprenta y cualquier proveedor de producción. Damos las indicaciones, supervisamos y validamos que el resultado cumple el estándar de la marca.</span><span class="en"><strong>Supplier coordination.</strong> We are the single point of contact with the photography company, the developer, the printer and any production supplier. We give the brief, supervise, and validate that the result meets the brand standard.</span></li>
+<li><span class="es"><strong>Interlocución con vuestro equipo.</strong> Trabajamos con el equipo comercial para entender qué llega, qué funciona en la calle y qué material necesitan. El marketing de una distribuidora se hace con los comerciales, no al margen de ellos.</span><span class="en"><strong>Liaison with your team.</strong> We work with the sales team to understand what is coming in, what works out on the road and what material they need. Marketing for a wholesale business is done with the sales reps, not around them.</span></li>
+<li><span class="es"><strong>Responsabilidad sobre los resultados.</strong> Medimos, informamos con transparencia y proponemos cambios cuando algo no funciona. Reunión mensual de seguimiento y revisión estratégica cada trimestre.</span><span class="en"><strong>Accountability for results.</strong> We measure, report transparently and propose changes when something is not working. Monthly review meeting and strategic review every quarter.</span></li>
+</ul>
+<p class="sub"><span class="es">Qué significa contratar un equipo de marketing completo</span><span class="en">What hiring a complete marketing team means</span></p>
+<p><span class="es">Lo que se contrata con la cuota mensual no es el tiempo de un profesional ni un servicio concreto: es un departamento de marketing entero, con todas las disciplinas que necesita una empresa como la vuestra.</span><span class="en">What the monthly fee buys is not one professional&#x27;s time or a single service: it is an entire marketing department, with every discipline a company like yours needs.</span></p>
+<p><span class="es">Estrategia, dirección de arte y diseño, contenido, desarrollo web, campañas de publicidad, SEO, analítica y automatización. Cada una de esas funciones la cubre alguien con criterio propio dentro del mismo equipo, y todas responden ante las mismas personas: las que dirigen el proyecto y conocen vuestro negocio de principio a fin.</span><span class="en">Strategy, art direction and design, content, web development, advertising campaigns, SEO, analytics and automation. Each of those functions is covered by someone with their own judgement inside the same team, and they all answer to the same people: the ones running the project, who know your business from end to end.</span></p>
+<p class="sub"><span class="es">Por qué eso importa más de lo que parece</span><span class="en">Why that matters more than it seems</span></p>
+<p><span class="es">La alternativa habitual es repartir el marketing entre proveedores distintos: una agencia para las campañas, un diseñador para la marca, alguien para la web, otro para el contenido. El resultado es previsible. Cada uno trabaja con información parcial, nadie tiene la visión completa, las piezas no encajan entre sí y la coordinación acaba recayendo sobre vosotros.</span><span class="en">The usual alternative is to spread marketing across different suppliers: an agency for the campaigns, a designer for the brand, someone for the website, someone else for the content. The result is predictable. Each of them works with partial information, nobody has the full picture, the pieces do not fit together and the coordination ends up landing on you.</span></p>
+<p><span class="es">Aquí ocurre lo contrario. Como todo se decide y se ejecuta bajo el mismo techo, la estrategia, lo que se publica, lo que se anuncia y lo que se imprime hablan el mismo idioma. No hay que explicar el negocio tres veces ni arbitrar entre criterios que no coinciden.</span><span class="en">Here the opposite happens. Because everything is decided and executed under the same roof, the strategy, what gets published, what gets advertised and what gets printed all speak the same language. There is no need to explain the business three times or to arbitrate between criteria that do not match.</span></p>
+<p class="sub"><span class="es">Y cubre lo que surja</span><span class="en">And it covers whatever comes up</span></p>
+<p><span class="es">Un departamento de marketing no se define solo por las tareas previstas: se define por poder resolver lo que aparece sin avisar. Una necesidad puntual, una oportunidad que hay que aprovechar rápido, un material que hace falta para mañana, una decisión que hay que tomar con datos.</span><span class="en">A marketing department is not defined only by the tasks on the plan: it is defined by being able to handle what turns up unannounced. A one-off need, an opportunity that has to be taken quickly, a piece of material needed for tomorrow, a decision that has to be made with data.</span></p>
+<p><span class="es">Todo eso se gestiona dentro del mismo equipo, sin buscar proveedores nuevos, sin negociar presupuestos sueltos y sin que tengáis que coordinar a nadie. Si hace falta desarrollo, está. Si hace falta dirección creativa, está. Si hay que hablar con una imprenta o dirigir una sesión fotográfica, lo hacemos nosotros.</span><span class="en">All of that is handled inside the same team, without hunting for new suppliers, without negotiating separate quotes and without you having to coordinate anyone. If development is needed, it is there. If creative direction is needed, it is there. If someone has to talk to a printer or run a photo shoot, we do it.</span></p>
+<p><span class="es">Nos ocupamos de todo el marketing y el marketing digital de la empresa: de la estrategia y de la ejecución, de lo planificado y de lo imprevisto. Vosotros tenéis un único interlocutor, una única cuota y un equipo completo detrás.</span><span class="en">We take care of all the company&#x27;s marketing and digital marketing: the strategy and the execution, the planned and the unplanned. You get a single point of contact, a single fee and a full team behind it.</span></p>
+<p class="sub"><span class="es">Una capa que no se detiene</span><span class="en">A layer that does not stop</span></p>
+<p><span class="es">Mientras se ejecutan las fases de materiales, captación o submarcas, este trabajo sigue corriendo cada mes sobre todo lo ya construido. No se pausa entre fases: la marca no se mantiene sola.</span><span class="en">While the phases for materials, acquisition or sub-brands are being executed, this work keeps running every month on top of everything already built. It does not pause between phases: a brand does not maintain itself.</span></p>
+<p class="sub"><span class="es">El volumen mensual</span><span class="en">The monthly volume</span></p>
+<p><span class="es">Durante las fases de construcción, de pago único, se producen 9 creatividades al mes, repartidas entre las piezas de contenido orgánico y las adaptaciones para campañas de publicidad. El reparto entre unas y otras se ajusta según el momento del proyecto y los resultados. Una vez completadas las fases, con la cuota mensual, el volumen de referencia se sitúa en torno a 6 creatividades al mes, y la cifra definitiva se fija en función del volumen de trabajo real en ese momento.</span><span class="en">During the one-off build phases, 9 creatives are produced each month, split between organic content pieces and adaptations for advertising campaigns. The split between the two is adjusted according to the stage of the project and the results. Once the phases are complete, under the monthly fee, the reference volume is around 6 creatives a month, with the final figure set according to the real volume of work at that point.</span></p>
+<p><span class="es">Todas las piezas se producen a partir del banco de material fotográfico y siguiendo el sistema de contenido definido en la Fase 2: mismos pilares, mismo tono y mismas plantillas.</span><span class="en">All pieces are produced from the photographic material bank and follow the content system defined in Phase 2: same pillars, same tone and same templates.</span></p>
+<p class="sub"><span class="es">Contenido: cómo lo trabajamos</span><span class="en">Content: how we work it</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Pilares de contenido.</strong> Producto y temporada (el grueso, sirve a los dos públicos); detrás de la cámara (la madrugada en Mercabarna, la selección del género, el reparto); prueba profesional (restaurantes clientes y colaboraciones con cocineros); y un pilar de marca (conservación, origen, cómo se come).</span><span class="en"><strong>Content pillars.</strong> Product and season (the bulk of it, serving both audiences); behind the camera (the early morning at Mercabarna, the selection of the produce, the delivery round); professional proof (restaurant customers and collaborations with chefs); and a brand pillar (storage, origin, how it is eaten).</span></li>
+<li><span class="es"><strong>Calendario y frecuencia.</strong> Fijamos un ritmo sostenible y planificamos el mes por adelantado, para aprobarlo en bloque. Lo que desactiva una cuenta no es publicar poco, es publicar de forma irregular.</span><span class="en"><strong>Calendar and frequency.</strong> We set a sustainable rhythm and plan the month in advance, so it can be approved in one block. What kills an account is not posting little, it is posting irregularly.</span></li>
+<li><span class="es"><strong>Producción por lotes.</strong> El material se captura en sesiones planificadas que cubren semanas de contenido, no piezas sueltas. Eso reduce el coste por pieza y evita el goteo de última hora.</span><span class="en"><strong>Batch production.</strong> Material is captured in planned sessions that cover weeks of content, not one-off pieces. That reduces the cost per piece and avoids the last-minute drip feed.</span></li>
+<li><span class="es"><strong>Edición y montaje.</strong> A partir del banco de material producimos las piezas: montaje, edición, adaptación a formatos y copies.</span><span class="en"><strong>Editing and assembly.</strong> From the material bank we produce the pieces: assembly, editing, adaptation to formats and copy.</span></li>
+</ul>
+<p class="sub"><span class="es">El resto del trabajo mensual</span><span class="en">The rest of the monthly work</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Gestión de redes:</strong> publicación, comunidad y respuesta.</span><span class="en"><strong>Social media management:</strong> posting, community and responses.</span></li>
+<li><span class="es">LinkedIn con su propia línea editorial, orientada a apoyar al equipo comercial.</span><span class="en">LinkedIn with its own editorial line, geared to supporting the sales team.</span></li>
+<li><span class="es">Creatividades para publicidad, adaptadas a los formatos, mensajes y objetivos de cada plataforma. Se renuevan periódicamente, porque se desgastan con la exposición.</span><span class="en">Advertising creatives, adapted to the formats, messages and objectives of each platform. They are refreshed periodically, because they wear out with exposure.</span></li>
+<li><span class="es"><strong>Gestión y optimización de campañas:</strong> seguimiento, ajustes y mejora continua.</span><span class="en"><strong>Campaign management and optimisation:</strong> tracking, adjustments and continuous improvement.</span></li>
+<li><span class="es"><strong>SEO y posicionamiento:</strong> mantenimiento y mejora continua en las dos ramas.</span><span class="en"><strong>SEO and positioning:</strong> maintenance and continuous improvement across both branches.</span></li>
+<li><span class="es">Análisis y reporting mensual, con métricas separadas por rama.</span><span class="en">Monthly analysis and reporting, with metrics split by branch.</span></li>
+<li><span class="es">Reuniones de seguimiento y acompañamiento continuo.</span><span class="en">Review meetings and ongoing support.</span></li>
+</ul>
+<p class="sub"><span class="es">Una responsabilidad compartida</span><span class="en">A shared responsibility</span></p>
+<p><span class="es">El contenido tiene dos velocidades. Una parte la producimos con autonomía a partir del banco de material de las sesiones planificadas. La otra necesita captura constante sobre el terreno (el género que llega hoy, el restaurante visitado esta semana) y depende de que alguien de UPFruit lo grabe y nos lo haga llegar. Ese flujo se pacta desde el principio: qué se captura, con qué mínimos y con qué frecuencia. Sin ese acuerdo, el pilar de «detrás de la cámara» se agota al segundo mes.</span><span class="en">Content runs at two speeds. Part of it we produce independently from the material bank built in the planned sessions. The other part needs constant capture on the ground (the produce that arrives today, the restaurant visited this week) and depends on someone at UPFruit filming it and getting it to us. That flow is agreed from the start: what gets captured, to what minimum standard and how often. Without that agreement, the «behind the camera» pillar runs dry by the second month.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Fase 5 · Submarcas del obrador</span><span class="en">Phase 5 · Production kitchen sub-brands</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: construir las dos marcas de producto, ya con la marca madre consolidada.</span><span class="en">Objective: to build the two product brands, with the parent brand already consolidated.</span></p>
+<p class="sub"><span class="es">Cuándo se activa</span><span class="en">When it is activated</span></p>
+<p><span class="es">Solo cuando la marca madre está en la calle y empieza a significar algo. Lanzarlas antes haría que el respaldo fuese decorativo. Además, requiere que esté respondida la pregunta pendiente: cómo se quiere vender a nivel nacional, a retail, directo al consumidor o vía restauración, porque cambia por completo el enfoque de cada marca.</span><span class="en">Only once the parent brand is out there and starting to mean something. Launching them earlier would make the endorsement purely decorative. It also requires the outstanding question to be answered: how you want to sell nationally, to retail, direct to consumer or via hospitality, because it completely changes the approach for each brand.</span></p>
+<p class="sub"><span class="es">Cómo se construye cada submarca</span><span class="en">How each sub-brand is built</span></p>
+<p><span class="es">Cada submarca sigue exactamente la misma estructura que la marca madre: primero su fundamento, después su identidad y, a continuación, las tres fases de aplicación, adaptadas a las necesidades concretas de esa marca.</span><span class="en">Each sub-brand follows exactly the same structure as the parent brand: first its foundation, then its identity, and after that the three application phases, adapted to that brand&#x27;s specific needs.</span></p>
+<ol class="steps">
+<li><span class="es"><strong>Fundamento de marca.</strong> Definición de producto, audiencia y posicionamiento propios de esa marca.</span><span class="en"><strong>Brand foundation.</strong> Definition of the product, audience and positioning specific to that brand.</span></li>
+<li><span class="es"><strong>Identidad y brandbook.</strong> Mismo proceso de propuestas y revisión, sistema visual completo y la fórmula concreta del respaldo de la marca madre.</span><span class="en"><strong>Identity and brand book.</strong> Same process of proposals and review, complete visual system and the specific formula for the parent brand&#x27;s endorsement.</span></li>
+<li><span class="es"><strong>Digital.</strong> Presencia propia, sistema visual para redes y plantillas de contenido.</span><span class="en"><strong>Digital.</strong> Its own presence, visual system for social and content templates.</span></li>
+<li><span class="es"><strong>Comercial y físico.</strong> Packaging, etiquetado y materiales de producto.</span><span class="en"><strong>Commercial and physical.</strong> Packaging, labelling and product materials.</span></li>
+<li><span class="es"><strong>Captación.</strong> Dirección visual de campañas, creatividades máster y adaptaciones.</span><span class="en"><strong>Acquisition.</strong> Visual direction for campaigns, master creatives and adaptations.</span></li>
+</ol>
+<p><span class="es">Cada submarca es un proyecto completo y se presupuesta por separado, fase a fase, igual que la marca madre. El naming, si no lo aportáis vosotros, se presupuestaría aparte.</span><span class="en">Each sub-brand is a complete project and is quoted separately, phase by phase, just like the parent brand. Naming, if you do not provide it yourselves, would be quoted separately.</span></p>
+<p class="sub"><span class="es">Trabajo continuo que generan las submarcas</span><span class="en">Ongoing work generated by the sub-brands</span></p>
+<p><span class="es">Cada submarca, una vez lanzada, genera su propia capa de continuidad: contenido, cuenta propia, campañas y reporting independientes de la marca madre. Ese trabajo mensual no está incluido en la cuota de la marca madre y se dimensiona por separado en el momento de activarlas.</span><span class="en">Each sub-brand, once launched, generates its own continuity layer: content, its own account, campaigns and reporting independent of the parent brand. That monthly work is not included in the parent brand&#x27;s fee and is sized separately at the point of activation.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Carril paralelo · Sistema de existencias</span><span class="en">Parallel track · Stock system</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: entender por qué no hay control de stock y definir la solución adecuada. Va por su cuenta desde el inicio porque no depende de la marca, y tiene su propio alcance y su propia cifra.</span><span class="en">Objective: to understand why there is no stock control and define the right solution. It runs on its own from the start because it does not depend on the brand, and it has its own scope and its own figure.</span></p>
+<p class="sub"><span class="es">Cómo lo abordamos, por orden</span><span class="en">How we tackle it, in order</span></p>
+<ol class="steps">
+<li><span class="es"><strong>Diagnóstico del proceso actual:</strong> cómo entra y sale la mercancía, qué se registra hoy y cuánta merma real se produce.</span><span class="en"><strong>Diagnosis of the current process:</strong> how goods come in and go out, what is recorded today and how much waste is actually produced.</span></li>
+<li><span class="es">Confirmación con Arga Digital de qué permite el ERP actual y si dispone de módulo de stock sin utilizar.</span><span class="en">Confirmation with Arga Digital of what the current ERP allows and whether it has an unused stock module.</span></li>
+<li><span class="es"><strong>Definición del proceso operativo:</strong> quién registra qué, cuándo y con qué frecuencia se hace recuento.</span><span class="en"><strong>Definition of the operational process:</strong> who records what, when, and how often stocktaking is done.</span></li>
+<li><span class="es">Solo entonces, propuesta de herramienta o de automatización, que se presupuesta aparte.</span><span class="en">Only then, a proposal for a tool or for automation, which is quoted separately.</span></li>
+</ol>
+<p class="sub"><span class="es">Qué necesitamos</span><span class="en">What we need</span></p>
+<ul class="clean">
+<li><span class="es">Acceso al ERP o una demostración con el responsable, y contacto directo con Arga Digital.</span><span class="en">Access to the ERP or a demonstration with the person in charge, plus direct contact with Arga Digital.</span></li>
+</ul>
+<p><span class="es">Regla de trabajo: no comprometemos ninguna solución hasta cerrar el diagnóstico. Proponer una herramienta antes de saber qué permite el sistema actual sería un gasto innecesario.</span><span class="en">Working rule: we do not commit to any solution until the diagnosis is closed. Proposing a tool before knowing what the current system allows would be money wasted.</span></p>
+</div></div></div>
+<div class="acc">
+  <button class="acc-head" aria-expanded="false">
+    <span><span class="ttl"><span class="es">Fase 6 · Sistemas de IA</span><span class="en">Phase 6 · AI systems</span></span></span>
+    <span class="chev" aria-hidden="true"></span>
+  </button>
+  <div class="acc-body"><div class="acc-inner">
+<p><span class="es">Objetivo: automatizar la entrada de pedidos, hoy manual. Los comerciales reciben pedidos por WhatsApp, llamada y email, y los introducen a mano en el sistema para que lleguen a preparación.</span><span class="en">Objective: automate order entry, which is manual today. Sales reps receive orders by WhatsApp, phone call and email, and key them in by hand so they reach the preparation team.</span></p>
+<p class="sub"><span class="es">Qué haría el sistema</span><span class="en">What the system would do</span></p>
+<p><span class="es">Interpretar el pedido tal y como llega, estructurarlo y trasladarlo automáticamente al sistema de gestión, de forma que el equipo de preparación reciba la información sin paso manual intermedio.</span><span class="en">Interpret the order exactly as it arrives, structure it and pass it automatically into the management system, so that the preparation team receives the information without an intermediate manual step.</span></p>
+<p class="sub"><span class="es">Qué hay que resolver antes</span><span class="en">What has to be resolved first</span></p>
+<ul class="clean">
+<li><span class="es"><strong>La vía de integración con el sistema de Arga Digital:</strong> si admite importación por fichero, API o acceso a base de datos. Es la pieza crítica y se confirma directamente con el proveedor.</span><span class="en"><strong>The integration route with Arga Digital&#x27;s system:</strong> whether it accepts file import, an API or database access. This is the critical piece and it is confirmed directly with the provider.</span></li>
+<li><span class="es">El grado de estandarización del catálogo y la variabilidad con la que cada cliente nombra los productos.</span><span class="en">How standardised the catalogue is and how much each client varies in the way they name products.</span></li>
+<li><span class="es"><strong>El marco legal del canal de voz:</strong> grabar o transcribir llamadas implica tratar datos personales y requiere aviso e información al cliente.</span><span class="en"><strong>The legal framework for the voice channel:</strong> recording or transcribing calls means processing personal data and requires notice and information to the client.</span></li>
+</ul>
+<p class="sub"><span class="es">Cómo lo plantearíamos</span><span class="en">How we would approach it</span></p>
+<p><span class="es">Por fases y con validación humana al principio: empezando por los canales de texto, WhatsApp y email, que son los más directos de automatizar, y dejando el canal de voz para una segunda etapa. El comercial revisa y confirma antes de que el pedido baje a producción, hasta que el sistema demuestre fiabilidad. Se presupuesta de forma independiente cuando se retome.</span><span class="en">In phases and with human validation at the start: beginning with the text channels, WhatsApp and email, which are the most straightforward to automate, and leaving the voice channel for a second stage. The sales rep reviews and confirms before the order goes down to production, until the system proves reliable. It is quoted separately when it is picked up again.</span></p>
+</div></div></div>
+</section>
+<section class="block reveal" id="inversion-y-modelo-de-cobro">
+  <span class="eyebrow"><span class="es">Sección 04</span><span class="en">Section 04</span></span>
+  <h2><span class="es">Inversión y modelo de cobro</span><span class="en">Investment and fee model</span></h2>
+<p><span class="es">El proyecto se organiza en dos tipos de trabajo, que se cobran de forma distinta según su naturaleza.</span><span class="en">The project is organised into two types of work, charged differently according to their nature.</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Trabajos de entrega única (pago único).</strong> Proyectos con principio y final: se construyen, se entregan y quedan en propiedad de UPFruit. Se cobran una sola vez.</span><span class="en"><strong>One-off deliverables (one-off payment).</strong> Projects with a beginning and an end: they are built, delivered and become the property of UPFruit. They are charged once.</span></li>
+<li><span class="es"><strong>Trabajo mensual (cuota mensual).</strong> El trabajo continuo que dirige y mantiene todo el marketing de la empresa. Se cobra cada mes mientras dure el servicio, y su importe se fija y se presenta antes de terminar la última fase de construcción.</span><span class="en"><strong>Monthly work (monthly fee).</strong> The ongoing work that directs and maintains all of the company&#x27;s marketing. It is charged every month for as long as the service lasts, and its amount is set and presented before the last build phase ends.</span></li>
+</ul>
+<p><span class="es">Todas las cifras se indican sin IVA. Esta propuesta cuantifica las fases de construcción; la cuota mensual se describe en todo su alcance y su importe se presupuestará más adelante, como se explica en el apartado B.</span><span class="en">All figures are stated excluding VAT. This proposal quantifies the build phases; the monthly fee is described in full scope and its amount will be quoted later, as explained in section B.</span></p>
+<h3><span class="es">A · Fases de construcción · Pago único</span><span class="en">A · Build phases · One-off payment</span></h3>
+<p class="sub"><span class="es">Alcance de partida y volumen de producto</span><span class="en">Starting scope and product volume</span></p>
+<p><span class="es">Las cifras que siguen corresponden a un alcance de partida definido pieza a pieza: número de páginas de web, de catálogo, de referencias de packaging, de aplicaciones de señalética y de creatividades. Cada fase detalla el suyo en el apartado correspondiente.</span><span class="en">The figures below correspond to a starting scope defined piece by piece: number of website pages, catalogue pages, packaging references, signage applications and creatives. Each phase sets out its own in the relevant section.</span></p>
+<p><span class="es">Ese alcance está dimensionado sobre la información de la que disponemos hoy. Y hay una variable que todavía no está cuantificada y que condiciona el proyecto más que ninguna otra: el volumen real de referencias que comercializáis y cuántas de ellas deben aparecer en la web y en el catálogo.</span><span class="en">That scope is sized on the information we have today. And there is one variable that is not yet quantified and that shapes the project more than any other: the real number of references you sell and how many of them have to appear on the website and in the catalogue.</span></p>
+<p><span class="es">No es un detalle menor. Trabajar cincuenta referencias o varios cientos son dos proyectos distintos, porque cambia la arquitectura del sitio, el número de páginas de producto, la extensión del catálogo, el volumen de fotografía necesario y la cantidad de contenido a producir y mantener.</span><span class="en">This is not a minor detail. Working with fifty references or several hundred are two different projects, because it changes the site architecture, the number of product pages, the length of the catalogue, the volume of photography needed and the amount of content to produce and maintain.</span></p>
+<p><span class="es">Por eso el fundamento de marca (Fase 0) incluye el inventario de gama: cuántas referencias hay, cómo están categorizadas y cuántas necesitan presencia propia. Con ese dato sobre la mesa confirmaremos el alcance de las fases siguientes o lo ajustaremos, siempre presentándolo por adelantado y con vuestro acuerdo antes de ejecutar nada.</span><span class="en">That is why the brand foundation (Phase 0) includes the range inventory: how many references there are, how they are categorised and how many need a presence of their own. With that figure on the table we will confirm the scope of the following phases or adjust it, always presenting it in advance and with your agreement before executing anything.</span></p>
+<p class="sub"><span class="es">Cómo tratar estas cifras</span><span class="en">How to read these figures</span></p>
+<p><span class="es">La Fase 0 y la Fase 1 tienen precio firme: su alcance no depende del volumen de producto.</span><span class="en">Phase 0 and Phase 1 have firm prices: their scope does not depend on product volume.</span></p>
+<p><span class="es">Las Fases 2, 3 y 4 son cifras de partida. Es la forma honesta de presentarlas: preferimos daros un número dimensionado sobre lo que sabemos y revisarlo con datos, antes que cerrar una cifra sobre un supuesto y descubrir a mitad de proyecto que el alcance era otro.</span><span class="en">Phases 2, 3 and 4 are starting figures. This is the honest way to present them: we would rather give you a number sized on what we know and review it with data, than close a figure on an assumption and discover halfway through the project that the scope was something else.</span></p>
+<table class="price"><thead><tr><th><span class="es">Fase</span><span class="en">Phase</span></th><th><span class="es">Qué incluye</span><span class="en">What it covers</span></th><th class="r"><span class="es">Inversión</span><span class="en">Investment</span></th></tr></thead><tbody>
+<tr><td class="name"><span class="es">Fase 0 · Fundamento de marca</span><span class="en">Phase 0 · Brand foundation</span></td><td class="desc"><span class="es">Estrategia, definición de negocio y audiencias, investigación de mercado y competencia, posicionamiento, pilares y mensajes. Entregable: presentación de fundamento de marca de aproximadamente diez páginas, que funciona como brief para todo el proyecto.</span><span class="en">Strategy, definition of the business and audiences, market and competitor research, positioning, pillars and messaging. Deliverable: a brand foundation presentation of roughly ten pages, which acts as the brief for the whole project.</span></td><td class="amt"><span class="es">6.000 €</span><span class="en">6.000 €</span></td></tr>
+<tr><td class="name"><span class="es">Fase 1 · Identidad visual y brandbook</span><span class="en">Phase 1 · Visual identity and brand book</span></td><td class="desc"><span class="es">Tres propuestas de logotipo y tres esquemas cromáticos, con una ronda de revisión cada uno. Sistema visual completo: tipografía, lenguaje gráfico, variantes y usos del logotipo y principios de composición. Dirección de fotografía de la marca. Brandbook con las dos aplicaciones, aplicaciones clave y archivos finales. No incluye naming.</span><span class="en">Three logo proposals and three colour schemes, with one round of revisions each. Complete visual system: typography, graphic language, logo variants and usage, and composition principles. Photographic direction for the brand. Brand book with the two applications, key applications and final files. Naming not included.</span></td><td class="amt"><span class="es">8.500 €</span><span class="en">8.500 €</span></td></tr>
+<tr><td class="name"><span class="es">Fase 2 · Digital</span><span class="en">Phase 2 · Digital</span></td><td class="desc"><span class="es">Plan de producción fotográfica y dirección de la sesión. Web con dos caminos: diseño de cuatro a cinco páginas principales de escritorio más referencias de móvil, y desarrollo. SEO base para las dos ramas. Fichas de Google Business de la distribuidora y de la tienda, LinkedIn de empresa e Instagram. Sistema visual de redes con las nueve primeras publicaciones y plantillas.</span><span class="en">Photography production plan and direction of the shoot. Website on two tracks: design of four to five main desktop pages plus mobile references, and development. Base SEO for the two branches. Google Business listings for the wholesale arm and the shop, company LinkedIn and Instagram. Social visual system with the first nine posts and templates.</span></td><td class="amt"><span class="es">16.500 €</span><span class="en">16.500 €</span></td></tr>
+<tr><td class="name"><span class="es">Fase 3 · Comercial y físico</span><span class="en">Phase 3 · Commercial and physical</span></td><td class="desc"><span class="es">Catálogo o presentación de empresa de hasta diez páginas. Packaging y etiquetado: tres modelos o referencias. Señalética y punto de venta: cinco aplicaciones clave. Papelería, tarjetas y firmas de email. Artes finales listos para producción.</span><span class="en">Catalogue or company presentation of up to ten pages. Packaging and labelling: three models or references. Signage and point of sale: five key applications. Stationery, business cards and email signatures. Final artwork ready for production.</span></td><td class="amt"><span class="es">10.250 €</span><span class="en">10.250 €</span></td></tr>
+<tr><td class="name"><span class="es">Fase 4 · Captación</span><span class="en">Phase 4 · Acquisition</span></td><td class="desc"><span class="es">Configuración técnica completa de medición. Estrategia de medios por rama. Tres conceptos de campaña, una creatividad máster por concepto y su adaptación a los formatos principales, alrededor de nueve piezas finales. Creación y lanzamiento en Meta Ads y Google Ads, con un alcance inicial de hasta dos campañas por plataforma, cubriendo tanto la tienda como la distribución. Cuadro de mando y KPI separados por rama.</span><span class="en">Full technical measurement set-up. Media strategy by branch. Three campaign concepts, one master creative per concept and its adaptation to the main formats, around nine final pieces. Creation and launch on Meta Ads and Google Ads, with an initial scope of up to two campaigns per platform, covering both the shop and the wholesale arm. Dashboard and KPIs split by branch.</span></td><td class="amt"><span class="es">11.500 €</span><span class="en">11.500 €</span></td></tr>
+</tbody></table>
+<p><span class="es">Esta cifra es variable y se confirmará antes de arrancar la fase. Está calculada sobre el volumen de piezas comerciales que estimamos hoy, pero el número real de referencias de packaging, de páginas de catálogo y de aplicaciones de punto de venta que hagan falta solo se conocerá con precisión al cerrar el fundamento de marca. Con ese dato confirmaremos el importe o lo ajustaremos, al alza o a la baja, siempre presentado por adelantado y con vuestro acuerdo antes de ejecutar nada.</span><span class="en">This figure is variable and will be confirmed before the phase starts. It is calculated on the volume of commercial pieces we estimate today, but the real number of packaging references, catalogue pages and point-of-sale applications required will only be known precisely once the brand foundation is closed. With that figure we will confirm the amount or adjust it, up or down, always presented in advance and with your agreement before executing anything.</span></p>
+<h3><span class="es">B · Dirección de marketing · Cuota mensual</span><span class="en">B · Marketing direction · Monthly fee</span></h3>
+<p><span class="es">Una única cuota que cubre la función completa de dirección de marketing: el equipo entero y todo lo que engloba el marketing digital de la empresa.</span><span class="en">A single fee covering the full marketing direction function: the entire team and everything the company&#x27;s digital marketing involves.</span></p>
+<p class="sub"><span class="es">Durante las fases de construcción, el trabajo continuo va incluido</span><span class="en">During the build phases, the ongoing work is included</span></p>
+<p><span class="es">Mientras el proyecto está en fase de construcción no se factura ninguna cuota adicional. Todo el trabajo continuo que se va activando a medida que avanzan las fases (contenido, redes, SEO, analítica, gestión de campañas y acompañamiento) está comprendido dentro del precio de cada fase.</span><span class="en">While the project is in its build phase, no additional fee is invoiced. All the ongoing work that is switched on as the phases progress (content, social, SEO, analytics, campaign management and support) is covered within the price of each phase.</span></p>
+<p><span class="es">Dicho de otro modo: el pago único de cada fase cubre tanto su construcción como la gestión continuada de lo que ya se ha entregado. Durante todo ese periodo tenéis el servicio completo sin coste mensual añadido.</span><span class="en">Put another way: the one-off payment for each phase covers both its build and the ongoing management of what has already been delivered. Throughout that period you have the full service with no added monthly cost.</span></p>
+<p class="sub"><span class="es">Al completarse las fases se activa la cuota</span><span class="en">Once the phases are complete, the fee kicks in</span></p>
+<p><span class="es">Cuando el proyecto de construcción llega a su fin y se liquida el último pago único, entra en vigor la cuota mensual de dirección de marketing, con el importe que se os habrá presentado y habremos acordado previamente. A partir de ese momento ARGO mantiene la función completa de forma indefinida, con el mismo equipo y el mismo alcance, y la relación pasa a ser puramente recurrente.</span><span class="en">When the build project comes to an end and the last one-off payment is settled, the monthly marketing direction fee comes into force, at the amount that will have been presented to you and agreed beforehand. From that moment ARGO maintains the full function indefinitely, with the same team and the same scope, and the relationship becomes purely recurring.</span></p>
+<p class="sub"><span class="es">Qué se contrata con la cuota mensual</span><span class="en">What you are contracting with the monthly fee</span></p>
+<p><span class="es">La cuota mensual no cubre un servicio ni un paquete de entregables: cubre la función de dirección de marketing de la empresa, ejercida de principio a fin por un equipo completo.</span><span class="en">The monthly fee does not cover a service or a package of deliverables: it covers the company&#x27;s marketing direction function, carried out from start to finish by a complete team.</span></p>
+<p><span class="es">En una empresa que decide tomarse en serio su marketing, esa función la ocupa un CMO, un director de marketing. Es quien decide hacia dónde va la marca, qué se prioriza, dónde se invierte y qué se descarta; quien traduce los objetivos de negocio en un plan; quien construye y dirige al equipo que lo ejecuta; y quien responde de los resultados ante la propiedad. Es una función de dirección, no de ejecución de encargos.</span><span class="en">In a company that decides to take its marketing seriously, that function is held by a CMO, a marketing director. They are the one who decides where the brand is going, what gets prioritised, where the money goes and what is ruled out; who translates business objectives into a plan; who builds and directs the team that executes it; and who answers for the results to the owners. It is a direction function, not order-taking.</span></p>
+<p><span class="es">Eso es exactamente lo que ARGO asume. Con una diferencia relevante: no solo dirigimos, también ejecutamos. Bajo la misma cuota tenéis la dirección y el departamento entero que la lleva a cabo.</span><span class="en">That is exactly what ARGO takes on. With one relevant difference: we do not just direct, we also execute. Under the same fee you have the direction and the entire department that delivers it.</span></p>
+<p class="sub"><span class="es">La dirección</span><span class="en">The direction</span></p>
+<p><span class="es">Es la parte menos visible y la que más determina el resultado. Implica planificar por trimestres y revisar el rumbo cada mes; decidir la distribución del presupuesto entre canales, ramas y momentos del año; fijar los objetivos y las métricas con las que se juzgará cada rama; interpretar los datos y actuar sobre ellos; anticipar la estacionalidad del producto fresco; proteger la coherencia de la marca en cada pieza que sale; y trasladar a la propiedad, con transparencia, qué está funcionando y qué no.</span><span class="en">It is the least visible part and the one that most determines the result. It means planning by quarter and reviewing the course every month; deciding how the budget is split between channels, branches and moments of the year; setting the objectives and the metrics each branch will be judged on; interpreting the data and acting on it; anticipating the seasonality of fresh produce; protecting brand coherence in every piece that goes out; and telling the owners, transparently, what is working and what is not.</span></p>
+<p class="sub"><span class="es">La ejecución</span><span class="en">The execution</span></p>
+<p><span class="es">Es el trabajo diario que sostiene todo lo anterior, y cubre el conjunto de disciplinas que necesita el marketing de una empresa como la vuestra.</span><span class="en">It is the daily work that holds up everything above, and it covers the full set of disciplines the marketing of a company like yours needs.</span></p>
+<p><span class="es">Producción creativa y dirección de arte. Contenido y redes en las dos ramas del negocio. Gestión y optimización continua de la publicidad en Meta Ads y Google Ads. SEO y posicionamiento. Web: mantenimiento, evolución y mejora. Analítica, medición y reporting. Coordinación de fotografía, desarrollo, imprenta y producción. E interlocución constante con vuestro equipo comercial.</span><span class="en">Creative production and art direction. Content and social across the two branches of the business. Ongoing management and optimisation of advertising on Meta Ads and Google Ads. SEO and search positioning. Website: maintenance, evolution and improvement. Analytics, measurement and reporting. Coordination of photography, development, printing and production. And constant dialogue with your sales team.</span></p>
+<p><span class="es">Son funciones que, cubiertas por separado, exigirían varios perfiles distintos. Aquí conviven en un mismo equipo, con un mismo criterio y un único interlocutor.</span><span class="en">These are functions that, covered separately, would require several different profiles. Here they live in one team, with one set of criteria and a single point of contact.</span></p>
+<p class="sub"><span class="es">El ritmo real del trabajo</span><span class="en">The real rhythm of the work</span></p>
+<p><span class="es">El marketing no se gestiona por entregas puntuales. Se gestiona en un ritmo continuo que no se detiene:</span><span class="en">Marketing is not managed through one-off deliveries. It is managed in a continuous rhythm that does not stop:</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Cada día:</strong> seguimiento y ajuste de campañas activas, publicación, respuesta y gestión de comunidad, resolución de lo que surge.</span><span class="en"><strong>Every day:</strong> monitoring and adjusting live campaigns, publishing, replying and managing the community, sorting out whatever comes up.</span></li>
+<li><span class="es"><strong>Cada semana:</strong> revisión de rendimiento, producción y aprobación de piezas, coordinación con proveedores y con vuestro equipo.</span><span class="en"><strong>Every week:</strong> performance review, production and approval of pieces, coordination with suppliers and with your team.</span></li>
+<li><span class="es"><strong>Cada mes:</strong> planificación del contenido, renovación de creatividades, informe de resultados y reunión de seguimiento.</span><span class="en"><strong>Every month:</strong> content planning, refreshing creatives, results report and follow-up meeting.</span></li>
+<li><span class="es"><strong>Cada trimestre:</strong> revisión estratégica, reasignación de presupuesto y definición de prioridades para el periodo siguiente.</span><span class="en"><strong>Every quarter:</strong> strategic review, budget reallocation and definition of priorities for the next period.</span></li>
+</ul>
+<p class="sub"><span class="es">Y lo que no está en ninguna lista</span><span class="en">And what is on no list at all</span></p>
+<p><span class="es">Una parte sustancial del trabajo de un departamento de marketing no es planificable. Es la oportunidad que aparece y hay que aprovechar rápido, el material que hace falta para una visita comercial de la semana que viene, la campaña que hay que corregir porque el rendimiento ha caído, la decisión que hay que tomar con datos y sin tiempo.</span><span class="en">A substantial part of the work of a marketing department cannot be planned. It is the opportunity that appears and has to be taken quickly, the material needed for a sales visit next week, the campaign that has to be corrected because performance has dropped, the decision that has to be taken with data and without time.</span></p>
+<p><span class="es">Todo eso se resuelve dentro del mismo equipo, sin buscar proveedores, sin negociar presupuestos sueltos y sin que vosotros tengáis que coordinar nada.</span><span class="en">All of that is resolved inside the same team, without hunting for suppliers, without negotiating one-off budgets and without you having to coordinate anything.</span></p>
+<p><span class="es">Lo que se contrata es el departamento de marketing de UPFruit: su dirección, su equipo, su criterio y su responsabilidad sobre los resultados. Vosotros os dedicáis a vuestro negocio.</span><span class="en">What you are contracting is UPFruit&#x27;s marketing department: its direction, its team, its judgement and its responsibility for the results. You get on with your business.</span></p>
+<div class="fee"><div><div class="t"><span class="es">Dirección de marketing</span><span class="en">Marketing direction</span></div><div class="d"><span class="es">Se activa una vez completadas las fases de construcción. Cubre la dirección estratégica, la producción creativa mensual, la gestión y optimización de campañas en las dos ramas, contenido y redes, SEO, analítica y reporting, la coordinación de proveedores y el acompañamiento continuo. El importe se determina antes de completar la última fase, en función del volumen de trabajo real en ese momento.</span><span class="en">Activated once the build phases are complete. It covers strategic direction, monthly creative production, campaign management and optimisation across the two branches, content and social, SEO, analytics and reporting, supplier coordination and ongoing support. The amount is set before the last phase is completed, based on the real volume of work at that point.</span></div></div><div class="a tbd"><span class="es">Importe a presupuestar</span><span class="en">Amount to be quoted</span></div></div>
+<div class="note fee-note">
+<span class="eyebrow"><span class="es">Cómo se fijará el importe de la cuota</span><span class="en">How the fee amount will be set</span></span>
+<p><span class="es"><strong>El importe de la cuota mensual se determinará antes de terminar la última fase de construcción.</strong> Es el momento en el que podremos ver con precisión el volumen real de trabajo: cuántas referencias hay que mantener, qué canales y campañas están activos y qué ritmo de producción pide de verdad el negocio. Fijarlo hoy supondría cerrar una cifra sobre un supuesto.</span><span class="en"><strong>The amount of the monthly fee will be set before the last build phase ends.</strong> That is the point at which we will be able to see the real volume of work precisely: how many references need maintaining, which channels and campaigns are live, and what production pace the business genuinely requires. Setting it today would mean fixing a figure on an assumption.</span></p>
+<p><span class="es">Se presupuestará de la misma manera que se ha preparado esta propuesta: con el alcance detallado partida a partida, un presupuesto planteado a nivel mensual y la explicación de qué cubre cada parte. Os lo presentaremos con antelación, antes de que la cuota empiece a correr, para que podáis revisarlo y decidir con toda la información sobre la mesa.</span><span class="en">It will be quoted in the same way this proposal has been prepared: with the scope detailed item by item, a budget set out on a monthly basis and an explanation of what each part covers. We will present it to you in advance, before the fee starts to run, so that you can review it and decide with all the information on the table.</span></p>
+<p><span class="es"><strong>El cálculo tendrá en cuenta el estado de cada fase y de cada sistema planteado en esta propuesta:</strong> qué está en marcha en ese momento y qué no. La cuota recogerá únicamente la gestión continua de lo que esté activo; lo que aún no se haya puesto en marcha no forma parte de ella.</span><span class="en"><strong>The calculation will take into account the status of each phase and each system set out in this proposal:</strong> what is up and running at that point and what is not. The fee will only cover the ongoing management of what is live; anything not yet launched is not part of it.</span></p>
+<p><span class="es">Los proyectos posteriores, la <strong>Fase 5 · Submarcas del obrador</strong>, el <strong>sistema de existencias</strong> y el <strong>sistema de pedidos con IA</strong>, no están incluidos en la cuota. Cada uno se presupuestará aparte, con su propio presupuesto y su propio alcance, en el momento de activarlo. Si una vez en marcha generan trabajo continuo, ese trabajo se valorará y se incorporará a la cuota, siempre presentado por adelantado y con vuestro acuerdo.</span><span class="en">The later projects, <strong>Phase 5 · Production kitchen sub-brands</strong>, the <strong>stock system</strong> and the <strong>AI ordering system</strong>, are not included in the fee. Each will be quoted separately, with its own budget and its own scope, at the point of activating it. If, once running, they generate ongoing work, that work will be assessed and added to the fee, always presented in advance and with your agreement.</span></p>
+</div>
+<p class="sub"><span class="es">Qué incluye la cuota, en detalle</span><span class="en">What the fee includes, in detail</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Dirección estratégica:</strong> planificación trimestral, decisiones sobre canales e inversión y responsabilidad sobre los resultados.</span><span class="en"><strong>Strategic direction:</strong> quarterly planning, decisions on channels and spend, and responsibility for the results.</span></li>
+<li><span class="es"><strong>Acceso a todo el equipo:</strong> estrategia, diseño, contenido, desarrollo, campañas y analítica bajo una única cuota y un único interlocutor.</span><span class="en"><strong>Access to the whole team:</strong> strategy, design, content, development, campaigns and analytics under a single fee and a single point of contact.</span></li>
+<li><span class="es">Producción de en torno a 6 creatividades al mes, a confirmar en función del volumen de trabajo, repartidas entre contenido orgánico y adaptaciones para publicidad.</span><span class="en">Production of around 6 creatives a month, to be confirmed according to the volume of work, split between organic content and adaptations for advertising.</span></li>
+<li><span class="es"><strong>Gestión y optimización de campañas:</strong> seguimiento, ajustes y mejora continua del rendimiento.</span><span class="en"><strong>Campaign management and optimisation:</strong> monitoring, adjustments and continuous performance improvement.</span></li>
+<li><span class="es"><strong>Gestión de redes:</strong> publicación, comunidad y respuesta.</span><span class="en"><strong>Social media management:</strong> publishing, community and replies.</span></li>
+<li><span class="es"><strong>SEO y posicionamiento:</strong> mantenimiento y mejora continua en las dos ramas.</span><span class="en"><strong>SEO and search positioning:</strong> maintenance and continuous improvement across the two branches.</span></li>
+<li><span class="es"><strong>Análisis y reporting:</strong> informe mensual de resultados, con métricas separadas por rama.</span><span class="en"><strong>Analysis and reporting:</strong> monthly results report, with metrics split by branch.</span></li>
+<li><span class="es">Reuniones de seguimiento y revisión estratégica trimestral.</span><span class="en">Follow-up meetings and quarterly strategic review.</span></li>
+<li><span class="es"><strong>Coordinación de proveedores externos:</strong> fotografía, desarrollo, imprenta y producción, con ARGO como interlocutor único.</span><span class="en"><strong>Coordination of external suppliers:</strong> photography, development, printing and production, with ARGO as the single point of contact.</span></li>
+<li><span class="es">Interlocución con el equipo comercial de UPFruit.</span><span class="en">Dialogue with UPFruit&#x27;s sales team.</span></li>
+<li><span class="es"><strong>Atención y acompañamiento:</strong> canal directo de comunicación y soporte continuado durante todo el mes.</span><span class="en"><strong>Attention and support:</strong> a direct communication channel and continuous support throughout the month.</span></li>
+</ul>
+<p class="sub"><span class="es">Alcance de producción de contenido</span><span class="en">Content production scope</span></p>
+<p><span class="es">La cuota parte de una referencia de en torno a seis creatividades al mes, que se confirmará junto con el importe de la cuota en función del volumen de trabajo real. Una vez fijado, ese volumen se reparte entre las piezas de contenido orgánico para redes y las adaptaciones para campañas de publicidad, en la proporción que mejor convenga en cada momento según el calendario y los resultados.</span><span class="en">The fee starts from a reference of around six creatives per month, which will be confirmed together with the fee amount according to the real volume of work. Once set, that volume is split between organic content pieces for social media and adaptations for advertising campaigns, in whatever proportion works best at any given time according to the calendar and the results.</span></p>
+<p><span class="es">Todas las piezas se producen a partir del banco de material fotográfico existente y siguiendo el sistema de contenido definido: mismos pilares, mismo tono y mismas plantillas. Incluye montaje, edición, adaptación a formatos y redacción de textos.</span><span class="en">All pieces are produced from the existing bank of photographic material and follow the defined content system: same pillars, same tone and same templates. This includes assembly, editing, adaptation to formats and copywriting.</span></p>
+<p><span class="es">Si en algún momento se necesita un volumen superior de piezas al mes, o producciones que salgan del sistema definido (por ejemplo, una campaña puntual con concepto propio, material para un lanzamiento o piezas de formato especial), se presupuesta aparte y se acuerda por adelantado.</span><span class="en">If at any point a higher volume of pieces per month is needed, or productions that fall outside the defined system (for example, a one-off campaign with its own concept, material for a launch or special-format pieces), these are quoted separately and agreed in advance.</span></p>
+<p class="sub"><span class="es">Alcance de publicidad</span><span class="en">Advertising scope</span></p>
+<p><span class="es">La gestión publicitaria incluida en la cuota cubre dos plataformas, Meta Ads y Google Ads, con un volumen de hasta dos campañas activas por plataforma, repartidas entre la tienda y la distribución. En total, hasta cuatro campañas en marcha de forma simultánea.</span><span class="en">The advertising management included in the fee covers two platforms, Meta Ads and Google Ads, with a volume of up to two active campaigns per platform, split between the shop and the wholesale arm. In total, up to four campaigns running simultaneously.</span></p>
+<p><span class="es">Dentro de ese alcance entra todo el trabajo continuo que exigen: seguimiento y optimización diaria, ajuste de públicos, mensajes y presupuestos, renovación de creatividades y reporting de rendimiento con métricas separadas por rama.</span><span class="en">That scope covers all the ongoing work they demand: daily monitoring and optimisation, adjustment of audiences, messages and budgets, refreshing of creatives and performance reporting with metrics broken down by branch.</span></p>
+<p><span class="es">Ampliar el número de campañas activas, abrir una plataforma publicitaria nueva o aumentar de forma significativa la inversión supone más montaje, más producción creativa y más gestión diaria. En ese caso se plantea un presupuesto específico para el trabajo de construcción y se valora el ajuste de la cuota mensual, siempre por adelantado y con vuestro acuerdo.</span><span class="en">Increasing the number of active campaigns, opening a new advertising platform or significantly raising the investment means more set-up, more creative production and more daily management. In that case we put forward a specific quote for the build work and assess an adjustment to the monthly fee, always in advance and with your agreement.</span></p>
+<div class="note">
+<span class="eyebrow"><span class="es">Sobre la inversión publicitaria</span><span class="en">On advertising investment</span></span>
+<p><span class="es">El presupuesto de anuncios es independiente de la cuota y lo paga UPFruit directamente a las plataformas, con su propia cuenta. Lo que se contrata aquí es la gestión, no la inversión.</span><span class="en">The ad budget is separate from the fee and is paid by UPFruit directly to the platforms, from its own account. What is contracted here is the management, not the investment.</span></p>
+</div>
+<p class="sub"><span class="es">Alcance de canales y cuentas incluidas</span><span class="en">Scope of channels and accounts included</span></p>
+<p><span class="es">Para que no quede lugar a interpretación, el trabajo continuo de contenido, gestión de comunidad y SEO cubre el siguiente alcance:</span><span class="en">So there is no room for interpretation, the ongoing content, community management and SEO work covers the following scope:</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Redes sociales:</strong> dos plataformas, Instagram y LinkedIn, con una cuenta en cada una. Incluye la producción de contenido, la publicación, la gestión de comunidad y la respuesta a mensajes y comentarios.</span><span class="en"><strong>Social media:</strong> two platforms, Instagram and LinkedIn, with one account on each. Includes content production, publishing, community management and responding to messages and comments.</span></li>
+<li><span class="es"><strong>SEO:</strong> dos frentes de posicionamiento, el de la marca madre en su vertiente de distribución y el local de la tienda física, trabajados sobre el mismo dominio y sus fichas de Google Business.</span><span class="en"><strong>SEO:</strong> two positioning fronts, that of the parent brand on its wholesale side and the local one for the physical shop, worked on the same domain and its Google Business listings.</span></li>
+</ul>
+<p><span class="es">Ese es el alcance sobre el que se dimensionará la cuota. Cada plataforma o cuenta adicional que se incorpore (una red social nueva, una segunda cuenta en una plataforma existente, o un nuevo frente de posicionamiento) supone más producción, más gestión diaria y más seguimiento, y por tanto conlleva un ajuste de la cuota proporcional al volumen de trabajo que añade.</span><span class="en">That is the scope on which the fee will be sized. Every additional platform or account brought in (a new social network, a second account on an existing platform, or a new positioning front) means more production, more daily management and more monitoring, and therefore entails an adjustment to the fee proportional to the volume of work it adds.</span></p>
+<p><span class="es">Como en el resto de ampliaciones, se plantea por adelantado y con vuestro acuerdo antes de activarlo.</span><span class="en">As with every other extension, it is put forward in advance and with your agreement before being activated.</span></p>
+<p class="sub"><span class="es">La cuota se dimensionará sobre este volumen de trabajo</span><span class="en">The fee will be sized on this volume of work</span></p>
+<p><span class="es">La cuota se calculará sobre el volumen de trabajo que recoge esta propuesta, contrastado con el volumen real que veamos al acercarnos al final de la construcción: las dos ramas del negocio bajo la marca madre, el alcance de contenido y campañas descrito y los canales previstos. Es el punto de partida, no un techo.</span><span class="en">The fee will be calculated on the volume of work set out in this proposal, checked against the real volume we see as the build nears its end: the two branches of the business under the parent brand, the content and campaign scope described and the channels envisaged. It is the starting point, not a ceiling.</span></p>
+<p><span class="es">En el momento en que se incorporen proyectos, marcas o líneas nuevas, o el volumen de trabajo aumente de forma significativa, el procedimiento es siempre el mismo y se plantea en dos partes:</span><span class="en">The moment new projects, brands or lines are brought in, or the volume of work increases significantly, the procedure is always the same and is put forward in two parts:</span></p>
+<ul class="clean">
+<li><span class="es">Pago único por el trabajo de construcción que requiera esa incorporación, presupuestado de forma específica y con su alcance detallado.</span><span class="en">A one-off payment for the build work that addition requires, quoted specifically and with its scope detailed.</span></li>
+<li><span class="es">Valoración de la cuota mensual, ajustada a la carga de gestión continua que ese trabajo genera a partir de entonces.</span><span class="en">An assessment of the monthly fee, adjusted to the ongoing management load that work generates from then on.</span></li>
+</ul>
+<p><span class="es">Las dos cifras se presentan juntas y por adelantado, antes de ejecutar nada, para que podáis decidir con la información completa. Ninguna ampliación se activa ni se factura sin vuestro acuerdo previo.</span><span class="en">The two figures are presented together and in advance, before anything is executed, so that you can decide with the full picture. No extension is activated or invoiced without your prior agreement.</span></p>
+<h3><span class="es">C · Bloques posteriores</span><span class="en">C · Later blocks</span></h3>
+<p><span class="es">Ninguno de estos proyectos está incluido en las fases de construcción ni en la cuota mensual. Cada uno tiene su propio presupuesto, independiente del resto, que se prepara en el momento de activarlo y con su alcance detallado.</span><span class="en">None of these projects is included in the build phases or in the monthly fee. Each has its own budget, separate from the rest, prepared at the point of activating it and with its scope detailed.</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Fase 5 · Submarcas del obrador.</strong> Cada marca sigue la misma estructura de fases que la marca madre, adaptada a sus necesidades. Se presupuesta fase a fase.</span><span class="en"><strong>Phase 5 · Production kitchen sub-brands.</strong> Each brand follows the same phase structure as the parent brand, adapted to its needs. Quoted phase by phase.</span></li>
+<li><span class="es"><strong>Trabajo mensual de las submarcas.</strong> Cada submarca lanzada genera su propia carga de contenido y campañas, que se dimensiona aparte y ajusta la cuota.</span><span class="en"><strong>Monthly work for the sub-brands.</strong> Each sub-brand launched generates its own content and campaign load, which is sized separately and adjusts the fee.</span></li>
+<li><span class="es"><strong>Sistema de existencias.</strong> Empieza por un diagnóstico con precio cerrado; la solución se presupuesta después, con el diagnóstico en la mano.</span><span class="en"><strong>Stock system.</strong> It starts with a diagnostic at a fixed price; the solution is quoted afterwards, with the diagnostic in hand.</span></li>
+<li><span class="es"><strong>Sistema de pedidos con IA.</strong> Se presupuesta cuando se confirme la vía de integración con el sistema actual.</span><span class="en"><strong>AI ordering system.</strong> Quoted once the route to integration with the current system is confirmed.</span></li>
+<li><span class="es"><strong>Tienda online.</strong> Si el pedido con recogida funciona y se decide dar el paso.</span><span class="en"><strong>Online shop.</strong> If ordering with collection works and the decision is made to take the step.</span></li>
+</ul>
+<h3><span class="es">Condiciones del servicio mensual</span><span class="en">Monthly service conditions</span></h3>
+<p><span class="es">La cuota mensual refleja el volumen de trabajo que hay en marcha en cada momento. No es una cifra cerrada para siempre: crece cuando crece el proyecto, y siempre de forma acordada y proporcional.</span><span class="en">The monthly fee reflects the volume of work under way at any given time. It is not a figure fixed forever: it grows when the project grows, and always in an agreed and proportional way.</span></p>
+<p><span class="es">Esto significa que, si en algún momento se amplía el alcance, se prepara una propuesta nueva con dos componentes: un pago único por el trabajo de construcción que requiera esa ampliación, y un ajuste de la cuota mensual que recoja la gestión continua que genera a partir de entonces.</span><span class="en">This means that, if the scope is extended at any point, a new proposal is prepared with two components: a one-off payment for the build work that extension requires, and an adjustment to the monthly fee reflecting the ongoing management it generates from then on.</span></p>
+<p class="sub"><span class="es">Qué situaciones activan una revisión</span><span class="en">Which situations trigger a review</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Más campañas, plataformas o presupuesto publicitario.</strong> El alcance de partida es de hasta dos campañas por plataforma en Meta Ads y Google Ads. Superar ese volumen, abrir un canal nuevo, ampliar a más mercados o subir de forma significativa la inversión implica más montaje, más creatividades y más gestión diaria.</span><span class="en"><strong>More campaigns, platforms or advertising budget.</strong> The starting scope is up to two campaigns per platform on Meta Ads and Google Ads. Going beyond that volume, opening a new channel, expanding into more markets or significantly raising the investment means more set-up, more creatives and more daily management.</span></li>
+<li><span class="es"><strong>Las marcas del obrador.</strong> Cada submarca tiene su propia construcción y, una vez lanzada, su propia gestión mensual.</span><span class="en"><strong>The production kitchen brands.</strong> Each sub-brand has its own build and, once launched, its own monthly management.</span></li>
+<li><span class="es"><strong>El sistema de existencias.</strong> Tiene su propio diagnóstico y su propia propuesta, y si deriva en un sistema que requiera mantenimiento, se refleja en la cuota.</span><span class="en"><strong>The stock system.</strong> It has its own diagnostic and its own proposal, and if it leads to a system requiring maintenance, that is reflected in the fee.</span></li>
+<li><span class="es"><strong>El sistema de pedidos con IA.</strong> Su construcción se presupuesta aparte, y el soporte y la mejora continua del sistema, una vez en marcha, se incorporan al trabajo mensual.</span><span class="en"><strong>The AI ordering system.</strong> Its build is quoted separately, and the support and continuous improvement of the system, once running, are folded into the monthly work.</span></li>
+<li><span class="es">Cualquier línea nueva de negocio o marca que se sume al proyecto.</span><span class="en">Any new business line or brand added to the project.</span></li>
+</ul>
+<p class="sub"><span class="es">Cómo se hace</span><span class="en">How it is done</span></p>
+<p><span class="es">Ninguna revisión se aplica de forma automática ni unilateral. Cuando detectamos que una ampliación va a cambiar el volumen de trabajo, lo planteamos por adelantado, con el alcance detallado y las dos cifras sobre la mesa: qué cuesta construirlo y en cuánto queda la cuota a partir de ese momento. Vosotros decidís si se activa.</span><span class="en">No review is applied automatically or unilaterally. When we spot that an extension is going to change the volume of work, we put it to you in advance, with the scope detailed and both figures on the table: what it costs to build and where the fee lands from that moment on. You decide whether it goes ahead.</span></p>
+<p><span class="es">Funciona también en sentido contrario: si en algún momento se reduce el alcance, la cuota se ajusta a la baja.</span><span class="en">It works the other way round too: if the scope is reduced at any point, the fee is adjusted downwards.</span></p>
+<p class="sub"><span class="es">Otras condiciones</span><span class="en">Other conditions</span></p>
+<ul class="clean">
+<li><span class="es"><strong>Arranque.</strong> La cuota no corre durante las fases de construcción: el trabajo continuo de ese periodo está incluido en el precio de las fases. La cuota empieza al completarse el proyecto de construcción.</span><span class="en"><strong>Start-up.</strong> The fee does not run during the build phases: the ongoing work in that period is included in the price of the phases. The fee begins once the build project is complete.</span></li>
+<li><span class="es"><strong>Permanencia mínima de un año.</strong> Dirigir el marketing de una empresa exige horizonte: la estrategia se planifica por trimestres y los resultados necesitan recorrido para poder valorarse.</span><span class="en"><strong>Minimum one-year commitment.</strong> Running a company&#x27;s marketing demands a horizon: strategy is planned by quarters and results need time to run before they can be judged.</span></li>
+<li><span class="es"><strong>Disponibilidad.</strong> Reunión mensual con report de seguimiento, revisión estratégica trimestral y canal directo de comunicación en horario laboral.</span><span class="en"><strong>Availability.</strong> Monthly meeting with a progress report, quarterly strategic review and a direct communication channel during working hours.</span></li>
+<li><span class="es"><strong>Revisiones incluidas.</strong> Cada entregable incluye una ronda de revisión. Páginas, referencias, aplicaciones o piezas adicionales se presupuestan aparte, acordadas por adelantado.</span><span class="en"><strong>Revisions included.</strong> Each deliverable includes one round of revision. Additional pages, product lines, applications or pieces are quoted separately, agreed in advance.</span></li>
+<li><span class="es"><strong>Volumen de producto.</strong> Los alcances de esta propuesta parten de los entregables de arranque definidos. Un volumen de referencias sustancialmente superior al que resulte del fundamento de marca requiere ampliar el alcance de web, catálogo, fotografía y contenido, y se presupuesta por separado.</span><span class="en"><strong>Product volume.</strong> The scopes in this proposal are based on the defined start-up deliverables. A volume of product lines substantially higher than the one resulting from the brand foundations requires extending the scope of the website, catalogue, photography and content, and is quoted separately.</span></li>
+</ul>
+<h3><span class="es">Fuera de la cuota</span><span class="en">Outside the fee</span></h3>
+<ul class="clean">
+<li><span class="es"><strong>Inversión publicitaria.</strong> El presupuesto de anuncios en Meta y Google lo paga UPFruit directamente a las plataformas, con su propia cuenta.</span><span class="en"><strong>Advertising investment.</strong> The ad budget on Meta and Google is paid by UPFruit directly to the platforms, from its own account.</span></li>
+<li><span class="es"><strong>Producción fotográfica y audiovisual.</strong> La ejecuta la empresa fotográfica correspondiente. Nosotros entregamos el plan de dirección, dirigimos y supervisamos.</span><span class="en"><strong>Photographic and audiovisual production.</strong> Carried out by the relevant photography company. We deliver the direction plan, direct and supervise.</span></li>
+<li><span class="es"><strong>Producción física.</strong> Impresión, fabricación e instalación de packaging, cajas, rótulos y material de punto de venta.</span><span class="en"><strong>Physical production.</strong> Printing, manufacturing and installation of packaging, boxes, signage and point-of-sale material.</span></li>
+<li><span class="es"><strong>Trámites legales.</strong> Registro de marca en la OEPM, dominios y cualquier permiso o licencia.</span><span class="en"><strong>Legal procedures.</strong> Trademark registration with the OEPM, domains and any permit or licence.</span></li>
+<li><span class="es"><strong>Alojamiento y licencias.</strong> Hosting, dominio y herramientas de terceros que requiera el proyecto.</span><span class="en"><strong>Hosting and licences.</strong> Hosting, domain and third-party tools the project requires.</span></li>
+</ul>
+</section>
+<section class="block reveal" id="tiempos">
+  <span class="eyebrow"><span class="es">Sección 05</span><span class="en">Section 05</span></span>
+  <h2><span class="es">Tiempos</span><span class="en">Timelines</span></h2>
+<p><span class="es">Los plazos de un proyecto como este dependen de muchos factores, y una parte importante de ellos no está en nuestras manos.</span><span class="en">The timelines of a project like this depend on many factors, and a significant number of them are not in our hands.</span></p>
+<p><span class="es">Influyen los tiempos de decisión por vuestra parte en cada punto de aprobación, especialmente en la identidad, que es donde más se suele alargar. Influye la disponibilidad de los colaboradores externos: la empresa de fotografía, que condiciona el calendario de la sesión y la entrega del material; el equipo de desarrollo; y el proveedor de producción e impresión, con sus propios plazos de fabricación. Influye también la información que necesitamos de vuestro lado, sobre todo el listado de referencias y la gama.</span><span class="en">Your decision times at each approval point have an influence, especially on the identity, which is where things usually drag on most. The availability of external collaborators has an influence: the photography company, which determines the schedule of the shoot and the delivery of the material; the development team; and the production and printing supplier, with their own manufacturing lead times. The information we need from your side also has an influence, above all the list of product lines and the range.</span></p>
+<div class="note fee-note">
+<span class="eyebrow"><span class="es">Plazos orientativos</span><span class="en">Indicative timelines</span></span>
+<p><span class="es"><strong>Los plazos que figuran en esta sección son orientativos, no un compromiso de entrega.</strong> Sirven para tener una idea inicial del recorrido del proyecto y para planificar con perspectiva.</span><span class="en"><strong>The timelines in this section are indicative, not a delivery commitment.</strong> They serve to give an initial idea of the project&#x27;s course and to plan with perspective.</span></p>
+<p><span class="es">El plazo concreto de cada fase se definirá justo antes de empezarla y se os comunicará con antelación, cuando ya conozcamos las variables reales de ese momento: el material disponible, la agenda de los colaboradores externos y vuestros tiempos de aprobación. A partir de ahí, ese calendario se sigue y se actualiza en las reuniones de seguimiento.</span><span class="en">The specific timeline for each phase will be defined just before it starts and communicated to you in advance, once we know the real variables at that moment: the material available, the schedules of external collaborators and your approval times. From then on, that calendar is followed and updated in the progress meetings.</span></p>
+</div>
+<h3><span class="es">Plazos orientativos por fase</span><span class="en">Indicative timelines by phase</span></h3>
+<ul class="clean">
+<li><span class="es"><strong>Fase 0 · Fundamento de marca:</strong> 2 a 3 semanas. Depende de la agilidad en la sesión de trabajo y en el acceso a la información de producto.</span><span class="en"><strong>Phase 0 · Brand foundations:</strong> 2 to 3 weeks. Depends on how quickly the working session runs and on access to product information.</span></li>
+<li><span class="es"><strong>Fase 1 · Identidad visual y brandbook:</strong> 4 a 6 semanas. Es la fase más sensible al ritmo de decisión, ya que incluye dos puntos de elección con ronda de revisión.</span><span class="en"><strong>Phase 1 · Visual identity and brand book:</strong> 4 to 6 weeks. This is the phase most sensitive to the pace of decision-making, as it includes two choice points with a round of revision.</span></li>
+<li><span class="es"><strong>Fase 2 · Digital:</strong> 6 a 8 semanas. Condicionada por la sesión fotográfica, que hay que agendar con antelación, y por la producción y publicación de la web.</span><span class="en"><strong>Phase 2 · Digital:</strong> 6 to 8 weeks. Conditioned by the photo shoot, which has to be booked in advance, and by the production and publication of the website.</span></li>
+<li><span class="es"><strong>Fase 3 · Comercial y físico:</strong> 5 a 6 semanas de diseño hasta la entrega de artes finales. Los plazos de impresión y fabricación corren después y los marca el proveedor de producción.</span><span class="en"><strong>Phase 3 · Sales and physical:</strong> 5 to 6 weeks of design through to delivery of final artwork. Printing and manufacturing lead times run afterwards and are set by the production supplier.</span></li>
+<li><span class="es"><strong>Fase 4 · Captación:</strong> 3 a 4 semanas desde el cierre de la fase anterior hasta tener las campañas en marcha.</span><span class="en"><strong>Phase 4 · Acquisition:</strong> 3 to 4 weeks from the close of the previous phase to having the campaigns running.</span></li>
+</ul>
+<p><span class="es">En conjunto, el recorrido de construcción se sitúa en una horquilla aproximada de seis a ocho meses. Algunas fases pueden solaparse parcialmente cuando el trabajo lo permite, lo que acorta el total. Es una estimación de referencia: el plazo de cada fase se cerrará antes de su inicio.</span><span class="en">Taken together, the build course sits in an approximate range of six to eight months. Some phases can partly overlap when the work allows, which shortens the total. It is a reference estimate: the timeline for each phase will be fixed before it begins.</span></p>
+<h3><span class="es">Qué puede acelerar o retrasar el calendario</span><span class="en">What can speed up or delay the calendar</span></h3>
+<p class="sub"><span class="es">Lo que lo acelera</span><span class="en">What speeds it up</span></p>
+<ul class="clean">
+<li><span class="es">Decisiones rápidas en los puntos de aprobación, sobre todo en la identidad.</span><span class="en">Fast decisions at the approval points, above all on the identity.</span></li>
+<li><span class="es">Tener el listado de referencias y la información de producto disponibles desde el inicio.</span><span class="en">Having the list of product lines and the product information available from the outset.</span></li>
+<li><span class="es">Agendar la sesión fotográfica cuanto antes, sin esperar a que la fase lo exija.</span><span class="en">Booking the photo shoot as early as possible, without waiting for the phase to demand it.</span></li>
+</ul>
+<p class="sub"><span class="es">Lo que lo retrasa</span><span class="en">What delays it</span></p>
+<ul class="clean">
+<li><span class="es">Rondas de revisión adicionales o cambios de dirección una vez aprobada una fase.</span><span class="en">Additional rounds of revision or changes of direction once a phase has been approved.</span></li>
+<li><span class="es">Retrasos en la sesión fotográfica, que arrastran toda la Fase 2 porque el material visual alimenta el resto.</span><span class="en">Delays in the photo shoot, which drag the whole of Phase 2 with them because the visual material feeds everything else.</span></li>
+<li><span class="es">Falta de información de gama, que bloquea el dimensionado de la web y del catálogo.</span><span class="en">Missing range information, which blocks the sizing of the website and the catalogue.</span></li>
+<li><span class="es"><strong>Plazos de terceros:</strong> fabricación, impresión e instalación.</span><span class="en"><strong>Third-party lead times:</strong> manufacturing, printing and installation.</span></li>
+</ul>
+</section>
+  </main>
+</div>
+<footer>Performance Marketing &amp; AI Automation — groupargous.com</footer>
+<script>
+(function(){
+  'use strict';
+
+  /* ---- Toggle de idioma: solo visibilidad CSS → scroll y acordeones se conservan ---- */
+  window.setLang = function(lang){
+    var y = window.scrollY;
+    document.documentElement.setAttribute('data-lang', lang);
+    document.documentElement.setAttribute('lang', lang);
+    document.getElementById('btnEs').classList.toggle('active', lang === 'es');
+    document.getElementById('btnEn').classList.toggle('active', lang === 'en');
+    window.scrollTo(0, y);
+  };
+
+  /* ---- Barra de progreso de lectura ---- */
+  var progress = document.getElementById('progress');
+  function onScroll(){
+    var h = document.documentElement.scrollHeight - window.innerHeight;
+    progress.style.width = (h > 0 ? (window.scrollY / h) * 100 : 0) + '%';
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll, {passive:true});
+  onScroll();
+
+  /* ---- Acordeones ---- */
+  document.querySelectorAll('.acc-head').forEach(function(head){
+    head.addEventListener('click', function(){
+      var acc = head.closest('.acc');
+      var open = acc.classList.toggle('open');
+      head.setAttribute('aria-expanded', open);
+    });
+  });
+
+  /* ---- Abrir / cerrar todo ---- */
+  window.accAll = function(btn, open){
+    var scope = btn.closest('section');
+    scope.querySelectorAll('.acc').forEach(function(acc){
+      acc.classList.toggle('open', open);
+      acc.querySelector('.acc-head').setAttribute('aria-expanded', open);
+    });
+  };
+
+  /* ---- Nav: scrollspy + cierre del menú en móvil ---- */
+  var toc = document.getElementById('toc');
+  var links = toc.querySelectorAll('a');
+  var sections = [];
+  links.forEach(function(a){
+    var sec = document.querySelector(a.getAttribute('href'));
+    if (sec) sections.push({a:a, sec:sec});
+    a.addEventListener('click', function(){ toc.classList.remove('open'); });
+  });
+  var spy = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){
+        links.forEach(function(a){ a.classList.remove('active'); });
+        var match = sections.find(function(s){ return s.sec === e.target; });
+        if (match) match.a.classList.add('active');
+      }
+    });
+  }, {rootMargin:'-30% 0px -60% 0px'});
+  sections.forEach(function(s){ spy.observe(s.sec); });
+
+  /* ---- Aparición al hacer scroll ---- */
+  var reveal = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if (e.isIntersecting){ e.target.classList.add('visible'); reveal.unobserve(e.target); }
+    });
+  }, {threshold:0.05});
+  document.querySelectorAll('.reveal').forEach(function(el){ reveal.observe(el); });
+
+  /* ---- Al imprimir, desplegar todo ---- */
+  window.addEventListener('beforeprint', function(){
+    document.querySelectorAll('.acc').forEach(function(a){ a.classList.add('open'); });
+  });
+})();
+</script>
+</body></html>
